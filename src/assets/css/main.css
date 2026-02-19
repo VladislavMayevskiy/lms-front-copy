@@ -1,0 +1,382 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;500;600;700;900&display=swap');
+@import 'tailwindcss';
+@import "./theme.css";
+
+@font-face {
+  font-family: "ChangingW00";
+  src: url("../fonts/ChangingW00.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "text";
+  src: url("../fonts/P22UndergroundW01Heavy.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+button, input, textarea, select {
+  outline: none;
+}
+
+button, a {
+  cursor: pointer;
+}
+
+select {
+  appearance: none;
+  background: url('/src/assets/imgs/ArrowDown.svg') no-repeat center right 1rem;
+}
+
+.date-picker-container {
+  border-color: #479AB1;
+  border-width: 1px;
+  background-color: #EAFBFF;
+  border-radius: 16px;
+  width: 100%;
+  min-height: 58px;
+  display: flex;
+  align-items: center;
+  -webkit-padding-start: var(--chakra-space-4);
+  padding-inline-start: var(--chakra-space-4);
+  -webkit-padding-end: var(--chakra-space-4);
+  padding-inline-end: var(--chakra-space-4);
+  font-family: text;
+}
+
+.loading-wrapper {
+  animation: rotate 1.4s linear infinite
+}
+
+.progress-circle {
+  animation: progress 1.4s ease-in-out infinite;
+}
+
+.footer-poppins { font-family: "Poppins", Inter, sans-serif; }
+.footer-roboto { font-family: "Roboto", Inter, sans-serif; }
+.admin-font { font-family: "Lato", sans-serif; }
+
+@theme {
+  --default-font-family: "Nunito", sans-serif;
+  --shadow-paper: 0px 16px 16px rgba(0, 0, 0, 0.1);
+  --shadow-button: 0px 0px 20px rgba(0, 0, 0, 0.1);
+  --color-grey: #F5F7F9;
+  --color-border-light-grey: #C7C7C7;
+  --color-dark-text: #1F2221;
+  --color-dusty-blue: #479AB1;
+  --color-dark-grey: #434645;
+  --color-middle-blue: #B4D6DF;
+  --color-primary: #0070C1;
+  --color-light-blue: #DDECF7;
+  --color-extralight-blue: #F2F8F9;
+  --color-secondary: #1565c0;
+  --color-dark: #100B20;
+  --color-error: #d32f2f;
+  --color-light-green: #CAE0C3;
+  --color-avatar-grey: #bdbdbd;
+  --color-light-grey: #f9fbfd;
+  --color-modal: rgba(17, 34, 45, 0.67);
+  --color-modal-backdrop: rgba(0, 0, 0, 0.5);
+  --color-table-item-hover: rgba(57, 112, 157, 0.035);
+  --color-border-grey: #e5e7eb;
+  --color-tag: #f8fafb;
+  --color-message-bg: rgba(186, 189, 194, 0.0924286);
+  --color-status-archived: #479AB1;
+  --color-green: #76B16B;
+  --color-orange: #F27D3B;
+  --shadow-header: 0 2px 21px rgba(0, 0, 0, 0.0490603);
+  --shadow-login-bar: 0px 0px 2px rgba(0, 0, 0, 0.2);
+  --shadow-login-bar-active: 0px 0px 20px rgba(0, 0, 0, 0.2);
+  --shadow-button-hover: 0px 0px 5px rgba(0, 0, 0, 0.2);
+  --shadow-sidebar: 0 4px 6px -1px rgb(0 0 0 / .1), 0 2px 4px -2px rgb(0 0 0 / .1);
+  --shadow-table: 0px 0px 5px rgba(0, 0, 0, 0.2);
+  --shadow-modal: 0px 0px 20px rgba(0, 0, 0, 0.06);
+  --shadow-editor-header: 0px 6px 10px 0px #ECEAEE33;
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(-90deg);
+  }
+  100% {
+    transform: rotate(270deg);
+  }
+}
+
+@keyframes progress {
+  0% {
+    stroke-dasharray: 1px, 200px;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 100px, 200px;
+    stroke-dashoffset: -15px;
+  }
+  100% {
+    stroke-dasharray: 1px, 200px;
+    stroke-dashoffset: -126px;
+  }
+}
+
+body[data-theme="dark"] {
+  background: #020617;
+  color: #e5e7eb;
+}
+
+body[data-theme="dark"] aside,
+body[data-theme="dark"] nav {
+  background: #020617;
+  color: #e5e7eb;
+}
+
+body[data-theme="dark"] .lms-box {
+  background: linear-gradient(180deg, #020617, #020617);
+  border: 1px solid #1e293b;
+
+}
+
+
+body[data-theme="dark"] .lms-box h1,
+body[data-theme="dark"] .lms-box h2,
+body[data-theme="dark"] .lms-box h3 {
+  color: #e5e7eb;
+}
+
+body[data-theme="dark"] .lms-box p,
+body[data-theme="dark"] .lms-box span,
+body[data-theme="dark"] .lms-box label {
+  color: #cbd5f5;
+}
+
+body[data-theme="dark"] .lms-box input,
+body[data-theme="dark"] .lms-box select {
+  background: #020617;
+  color: #e5e7eb;
+  border-color: #1e293b;
+}
+
+body[data-theme="dark"] .lms-box table,
+body[data-theme="dark"] .lms-box th,
+body[data-theme="dark"] .lms-box td {
+  background: #020617;
+  color: #e5e7eb;
+  border-color: #1e293b;
+}
+
+body[data-theme="dark"] .chakra-stack[style*="background: white"] {
+  background: linear-gradient(180deg,#020617,#020617) !important;
+  border-color: #1e293b !important;
+
+}
+
+body[data-theme="dark"] [style*="#FCE0B5"] {
+  background: #020617 !important;
+  color: #93c5fd !important;
+}
+
+body[data-theme="dark"] button[style*="background: white"] {
+  background: #020617 !important;
+  color: #e5e7eb !important;
+  border-color: #1e293b !important;
+}
+
+body[data-theme="dark"] input[style*="background: white"] {
+  background: #020617 !important;
+  color: #e5e7eb !important;
+  border-color: #1e293b !important;
+}
+
+body[data-theme="dark"] [style*="#434645"] {
+  color: #94a3b8 !important;
+}
+
+body[data-theme="dark"] button[style*="border-radius: 99px"] {
+  background: #020617 !important;
+  color: #e5e7eb !important;
+  border: 1px solid #1e293b !important;
+}
+
+body[data-theme="dark"] .chakra-stack[style*="background: white"] {
+  background: radial-gradient(1200px 600px at 50% -200px,#020617,#020617) !important;
+  border: 1px solid #1e293b !important;
+}
+
+body[data-theme="dark"] [style*="#FCE0B5"] {
+  background: #020617 !important;
+  color: #93c5fd !important;
+  border: 1px solid #1e293b !important;
+}
+
+body[data-theme="dark"] [style*="#434645"] {
+  color: #94a3b8 !important;
+}
+
+body[data-theme="dark"] button[style*="background: white"] {
+  background: linear-gradient(180deg,#020617,#020617) !important;
+  color: #e5e7eb !important;
+  border-color: #1e293b !important;
+}
+
+body[data-theme="dark"] input[style*="background: white"] {
+  background: #020617 !important;
+  color: #e5e7eb !important;
+  border-color: #1e293b !important;
+}
+
+body[data-theme="dark"] button[style*="border-radius: 99px"] {
+  background: #020617 !important;
+  color: #e5e7eb !important;
+  border: 1px solid #1e293b !important;
+}
+
+body[data-theme="dark"] .lms-dark-card {
+  background: radial-gradient(1200px 600px at 50% -300px,#050919,#020617) !important;
+  border-color: #1e293b !important;
+}
+
+body[data-theme="dark"] .lms-dark-badge {
+  background: linear-gradient(180deg,#020617,#020617) !important;
+  color: #93c5fd !important;
+  border: 1px solid #1e293b !important;
+}
+
+body[data-theme="dark"] .lms-dark-panel {
+  background: radial-gradient(1200px 600px at 50% -300px,#020617,#020617) !important;
+  border-color: #1e293b !important;
+
+}
+
+body[data-theme="dark"] .lms-dark-input {
+  background: linear-gradient(180deg,#020617,#020617) !important;
+  border-color: #1e293b !important;
+  color: #e5e7eb !important;
+}
+
+body[data-theme="dark"] .lms-dark-input * {
+  color: #e5e7eb !important;
+}
+
+body[data-theme="dark"] .lms-sidebar-active {
+  background: linear-gradient(180deg,#020617,#020617) !important;
+  border: 1px solid #1e293b !important;
+
+  color: #ffffff !important;
+  font-weight: 600;
+}
+
+body[data-theme="dark"] .lms-white-icon svg,
+body[data-theme="dark"] .lms-white-icon svg path,
+body[data-theme="dark"] .lms-white-icon svg rect,
+body[data-theme="dark"] .lms-white-icon svg circle,
+body[data-theme="dark"] .lms-white-icon svg line {
+  stroke: #ffffff !important;
+  fill: #ffffff !important;
+}
+
+
+
+
+body[data-theme="dark"] .lms-svg-outline svg path {
+  stroke: #ffffff !important;
+  fill: none !important;
+}
+
+body[data-theme="dark"] .chakra-button {
+  background: transparent !important;
+  color: #cbd5e1 !important;
+}
+
+body[data-theme="dark"] .chakra-button svg {
+  color: #cbd5e1 !important;
+  fill: #cbd5e1 !important;
+
+}
+
+body[data-theme="dark"] .chakra-button:hover {
+  background: rgba(255,255,255,.06) !important;
+  color: #ffffff !important;
+}
+
+body[data-theme="dark"] .chakra-button:hover svg {
+  color: #ffffff !important;
+  fill: #ffffff !important;
+}
+
+
+body[data-theme="dark"] a[aria-current="page"] .chakra-button {
+  background: linear-gradient(180deg,#020617,#020617) !important;
+  border: 1px solid #ffffff !important;
+  color: #ffffff !important;
+}
+
+body[data-theme="dark"] a[aria-current="page"] .chakra-button svg {
+  color: #ffffff !important;
+  fill: #ffffff !important;
+}
+
+body[data-theme="dark"] a[aria-current="page"] .chakra-button:hover {
+  background: #020617 !important;
+}
+
+body[data-theme="dark"] .lms-box {
+  background: #020617 !important;
+  border-color: #1e293b !important;
+  color: #e5e7eb !important;
+}
+
+
+body[data-theme="dark"] .lms-subcard {
+  background: #020617 !important;
+  border-color: #1e293b !important;
+  color: #e5e7eb !important;
+}
+
+body[data-theme="dark"] .lms-muted {
+  color: #ffffff !important;
+}
+
+body[data-theme="dark"] .lms-icon-row svg {
+  color: #ffffff !important;
+  fill: #ffffff !important;
+}
+
+body[data-theme="dark"] .lms-overlay {
+  background: #020617;
+  border: 1px solid #1e293b;
+  color: #e5e7eb;
+}
+
+body[data-theme="dark"] .lms-overlay * {
+  color: #e5e7eb;
+}
+
+body[data-theme="dark"] .lms-overlay .chakra-button {
+  background: transparent;
+  border: 1px solid #ffffff;
+  color: #ffffff;
+}
+
+body[data-theme="dark"] .lms-svg-brand {
+  color: #ffffff;
+  border: 1px solid #ffffff;
+  background: transparent;
+}
+body[data-theme="dark"] .lms-svg-brand svg * {
+  fill: currentColor !important;
+}
+
+body[data-theme="dark"] .lms-border-white {
+  border: 1px solid #ffffff
+}
+
+.ql-editor h1 { font-size: 2em; font-weight: 700; margin: 0.67em 0; }
+.ql-editor h2 { font-size: 1.5em; font-weight: 700; margin: 0.75em 0; }
+.ql-editor h3 { font-size: 1.17em; font-weight: 700; margin: 0.83em 0; }
+.ql-editor h4 { font-size: 1em; font-weight: 700; margin: 0.9em 0; } 
+.ql-editor h5 { font-size: 0.9em; font-weight: 700; margin: 0.9em 0; }
+
+.ql-editor p { margin: 0.5em 0; }
+.ql-editor ul, .ql-editor ol { padding-left: 1.5em; margin: 0.5em 0; }
+.ql-editor a { color: #0070C1; text-decoration: underline; }
