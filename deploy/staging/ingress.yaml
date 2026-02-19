@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: lms-frontend
+  namespace: staging
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+spec:
+  ingressClassName: nginx-internal
+  rules:
+  - host: 'lms-frontend.eschools.co'
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: lms-frontend
+            port:
+              number: 80
+  tls:
+  - hosts:
+    - '*.eschools.co'
+    secretName: letsencrypt-eschools-co-certificate

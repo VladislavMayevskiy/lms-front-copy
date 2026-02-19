@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lms-frontend
+  namespace: staging
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: lms-frontend
+  template:
+    metadata:
+      labels:
+        app: lms-frontend
+    spec:
+      # affinity:
+      #   nodeAffinity:
+      #     requiredDuringSchedulingIgnoredDuringExecution:
+      #       nodeSelectorTerms:
+      #         - matchExpressions:
+      #             - key: agentpool
+      #               operator: In
+      #               values:
+      #                 - general
+      volumes:
+        - name: env-file
+          configMap:
+            name: lms-frontend
+      containers:
+        - name: eschools-frontend
+          image: eschoolsregistry.azurecr.io/lms-frontend-staging:1.0
+          ports:
+            - containerPort: 80
+              name: http
+          volumeMounts:
+            - name: env-file
+              mountPath: /.env.production
+              subPath: .env.production
+          # resources:
+          #   requests:
+          #     cpu: 25m
+          #     memory: 50Mi
+          #   limits:
+          #     cpu: 25m
+          #     memory: 100Mi
