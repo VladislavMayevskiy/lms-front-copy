@@ -1,0 +1,15 @@
+:root {
+  --bg-page: #f5f7f9;
+  --bg-card: #ffffff;
+  --text-main: #434645;
+  --border-main: #b4d6df;
+  --accent-main: #0070c1;
+}
+
+:root[data-theme="dark"] {
+  --bg-page: #0f172a;
+  --bg-card: #1e293b;
+  --text-main: #e5e7eb;
+  --border-main: #334155;
+  --accent-main: #60a5fa;
+}
