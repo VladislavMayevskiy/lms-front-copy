@@ -25,7 +25,6 @@ export const CreateCourseModal = () => {
       name: course?.name || "",
       description: course?.description || "",
       instructor: course?.instructor || "",
-      price: course?.price || "",
       about: course?.about || "",
       achievements: course?.achievements || "",
       position: course?.position || null,
@@ -170,20 +169,6 @@ export const CreateCourseModal = () => {
                 id="create-course-instructor-name"
                 label="Instructor Name*"
                 placeholder="Enter instructor name"
-                error={error?.message}
-                {...field}
-              />
-            )}
-          />
-          <Controller
-            name="price"
-            control={control}
-            render={({ field, fieldState: { error } }) => (
-              <TextField
-                id="create-course-price"
-                label="Price"
-                placeholder="Enter price"
-                type="number"
                 error={error?.message}
                 {...field}
               />

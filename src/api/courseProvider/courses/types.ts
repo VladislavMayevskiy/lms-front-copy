@@ -10,7 +10,6 @@ export type ApiCourseListType = {
   type: number;
   name: string;
   description: string;
-  price: string;
   status: number;
   position: number;
   instructor: string;
@@ -30,7 +29,6 @@ export type ApiCourseType = {
   type: number;
   name: string;
   description: string;
-  price: string;
   status: number;
   position: number;
   instructor: string;
