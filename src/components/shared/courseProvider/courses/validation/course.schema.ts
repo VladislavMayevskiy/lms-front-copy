@@ -5,7 +5,6 @@ export const courseFormSchema = z.object({
   type: z.number(),
   name: z.string(),
   description: z.string(),
-  price: z.string(),
   duration: z.string(),
   instructor: z.string(),
   position: z.number().nullable(),

@@ -29,7 +29,6 @@ export const EditorHeader = () => {
       status: CourseStatusIds[data.status],
       name: data.name,
       description: data.description,
-      price: data.price,
       duration: (data.duration || 0).toString(),
       instructor: data.instructor,
       position: data.position,

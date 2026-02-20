@@ -10,7 +10,6 @@ export type CourseListType = {
   type: CourseTypes;
   name: string;
   description: string;
-  price: string;
   status: CourseStatusType;
   position: number;
   instructor: string;
@@ -30,7 +29,6 @@ export type CourseType = {
   type: CourseTypes;
   name: string;
   description: string;
-  price: string;
   status: CourseStatusType;
   position: number;
   instructor: string;
