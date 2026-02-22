@@ -7,11 +7,13 @@ import {
   VStack,
   SimpleGrid,
   Spinner,
+  Select,
 } from "@chakra-ui/react";
 import React from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import Modal from "components/ui/modal";
+import { COUNTRIES } from "utils/countries";
 
 import { useModalStore } from "stores/modalStore";
 import { authStore } from "stores/authStore";
@@ -278,12 +280,36 @@ function StripeActivateContent({ schoolId }: { schoolId: number }) {
         </Text>
 
         <Box className="flex flex-col md:flex-row gap-4 md:gap-8">
-          <TextField
+          <Controller
             control={control}
             name="country"
-            label={t("general.labels.country", "Country")}
-            required
-            placeholder={t("general.placeholders.country", "Country")}
+            rules={{ required: true }}
+            render={({ field }) => (
+              <VStack align="stretch" spacing="4px" w="100%">
+                <Text fontFamily="Lato" fontSize="14px" fontWeight="bold">
+                  {cleanRequired(t("general.labels.country", "Country"))}*
+                </Text>
+                <Select
+                  {...field}
+                  placeholder={t("general.placeholders.country", "Select country")}
+                  h="44px"
+                  fontFamily="Lato"
+                  borderRadius="10px"
+                  fontSize="14px"
+                  borderWidth="1px"
+                  bgColor="#F5F7F9"
+                  borderColor="#B4D6DF"
+                  color="#434645"
+                  _placeholder={{ color: "#0070C1" }}
+                >
+                  {COUNTRIES.map((c) => (
+                    <option key={c.code} value={c.code}>
+                      {c.name}
+                    </option>
+                  ))}
+                </Select>
+              </VStack>
+            )}
           />
           <TextField
             control={control}
