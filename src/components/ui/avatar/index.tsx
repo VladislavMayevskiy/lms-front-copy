@@ -1,3 +1,4 @@
+import { useState } from "react";
 import type { Nullable } from "types/general";
 
 type Props = {
@@ -5,11 +6,27 @@ type Props = {
   lastName: string;
   avatar?: Nullable<string>;
 };
+
 export const Avatar = ({ avatar, firstName, lastName }: Props) => {
+
+  const [imgError, setImgError] = useState(false);
+
+  const showImage = Boolean(avatar) && !imgError;
+
   return (
     <div className="bg-dark-grey w-11 h-11 rounded-[4px] overflow-hidden">
-      {avatar ? (
-        <img src={avatar} alt="Avatar" className="w-full h-full" />
+      {showImage ? (
+        <img
+          src={avatar!}
+          alt="Avatar"
+          className="w-full h-full object-cover"
+          onError={() => {
+            if (import.meta.env.DEV) {
+              console.debug('[Avatar] Image failed to load, falling back to initials. src:', avatar);
+            }
+            setImgError(true);
+          }}
+        />
       ) : (
         <div className="w-full h-full flex items-center justify-center">
           <span className="font-bold text-lg text-white">
@@ -27,10 +44,23 @@ type SchoolAvatarProps = {
 };
 
 export const SchoolAvatar = ({ avatar, name }: SchoolAvatarProps) => {
+  const [imgError, setImgError] = useState(false);
+  const showImage = Boolean(avatar) && !imgError;
+
   return (
     <div className="bg-dark-grey w-11 h-11 rounded-full overflow-hidden">
-      {avatar ? (
-        <img src={avatar} alt="Avatar" className="w-full h-full" />
+      {showImage ? (
+        <img
+          src={avatar!}
+          alt="Avatar"
+          className="w-full h-full object-cover"
+          onError={() => {
+            if (import.meta.env.DEV) {
+              console.debug('[SchoolAvatar] Image failed to load, falling back to initials. src:', avatar);
+            }
+            setImgError(true);
+          }}
+        />
       ) : (
         <div className="w-full h-full flex items-center justify-center">
           <span className="font-bold text-lg text-white">

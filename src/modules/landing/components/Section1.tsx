@@ -27,7 +27,7 @@ export default function Section1() {
       <TrianglePurple 
         style={{
           position: 'absolute',
-          top: '20px',
+          top: '100px',
           left: '20px',
           width: '140px',
           zIndex: 1,

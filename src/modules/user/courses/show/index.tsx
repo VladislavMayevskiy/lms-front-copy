@@ -62,28 +62,28 @@ const [openModule, setOpenModule] = useState<number | null>(null);
         {isLoading && <Spinner isLoading={isLoading} />}
         <Box p={"24px"} bgColor={"white"} borderColor={"#B4D6DF"} borderWidth={"1px"} borderRadius={"10px"} className="lms-box w-full md:w-2/3 md:min-h-[892px]">
 
-          <Heading fontFamily={"Lato"} fontSize="32px" fontWeight="medium" mb={4}>
+          <Heading fontFamily={"Lato"} fontSize="32px" fontWeight="medium" mb={4} noOfLines={2}>
              {data.name}
           </Heading>
 
-          <Text mb={4} textColor={"#434645"} fontSize={"16px"} fontFamily={"Lato"}>
+          <Text mb={4} textColor={"#434645"} fontSize={"16px"} fontFamily={"Lato"} noOfLines={6}>
             {data.description}
           </Text>
           <Box mb={4} className="flex gap-3 flex-wrap">
             <Box bgColor={"#CAE0C3"} px={3} py={1} borderRadius="6px">
-              <Text fontWeight={"medium"} letterSpacing={"150%"} fontSize="14px">{data.modules.length} {t("user.courses.learn.modules")}</Text>
+              <Text fontWeight={"medium"} fontSize="14px">{data.modules.length} {t("user.courses.learn.modules")}</Text>
             </Box>
 
             <Box bgColor={"#CAE0C3"} px={3} py={1} borderRadius="6px">
-              <Text fontSize="14px" letterSpacing={"150%"}>{totalUnits} {t("user.courses.learn.units")}</Text>
+              <Text fontSize="14px">{totalUnits} {t("user.courses.learn.units")}</Text>
             </Box>
 
             <Box bgColor={"#CAE0C3"} px={3} py={1} borderRadius="6px">
-              <Text fontSize="14px" letterSpacing={"150%"}>{data.duration} {t("general.hours")}</Text>
+              <Text fontSize="14px">{data.duration} {t("general.hours")}</Text>
             </Box>
 
             <Box bgColor={"#CAE0C3"} px={3} py={1} borderRadius="6px">
-              <Text fontSize="14px" letterSpacing={"150%"}>{t("user.courses.instructor")}: {data.instructor}</Text>
+              <Text fontSize="14px">{t("user.courses.instructor")}: {data.instructor}</Text>
             </Box>
           </Box>
     {user?.is_subscribed === true ? (
@@ -107,7 +107,7 @@ const [openModule, setOpenModule] = useState<number | null>(null);
         ) : null}
             <Divider borderColor={"#B4D6DF"} borderWidth={"0.5px"} mb={5}/>
           <Heading fontSize="20px" fontWeight={"bold"} fontFamily={"Lato"} mb={3}>{t("user.courses.learn.aboutThisCourse")}</Heading>
-          <Text fontSize="14px" lineHeight={"150%"} fontFamily={"Lato"} color="#434645" mb={6}>
+          <Text fontSize="14px" lineHeight={"150%"} fontFamily={"Lato"} color="#434645" mb={6} noOfLines={6}>
             {data.about}
           </Text>
 
@@ -146,11 +146,11 @@ const [openModule, setOpenModule] = useState<number | null>(null);
     <Box key={module.id} mb={4} >
       <VStack align="start">
 
-        <Text fontWeight="bold" fontSize="15px" fontFamily="Lato">
+        <Text fontWeight="bold" fontSize="15px" fontFamily="Lato" noOfLines={2}>
           {t("user.courses.learn.module")} {index + 1}: {module.description}
         </Text>
 
-        <Text fontSize="14px" fontFamily="Lato" color="gray.500">
+        <Text fontSize="14px" fontFamily="Lato" color="gray.500" noOfLines={2}>
           {module.description}
         </Text>
 
@@ -169,8 +169,9 @@ const [openModule, setOpenModule] = useState<number | null>(null);
                 className="lms-box w-full md:w-[352px]"
                 display="flex"
                 alignItems="center"
+                overflow="hidden"
               >
-                <Heading fontFamily="Lato" fontSize="15px" fontWeight="medium">
+                <Heading fontFamily="Lato" fontSize="15px" fontWeight="medium" noOfLines={1} overflow="hidden">
                   {t("user.courses.learn.unit")} {uIndex + 1}: {unit.description}
                 </Heading>
               </Box>

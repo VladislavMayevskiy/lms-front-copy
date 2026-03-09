@@ -44,7 +44,7 @@ export const UnitsTable = ({ units, courseId, moduleId, isLoading }: Props) => {
   });
 
   return (
-    <table>
+    <table className="w-full table-fixed">
       <thead>
         {getHeaderGroups().map((headerGroup) => (
           <tr key={headerGroup.id}>
@@ -61,7 +61,7 @@ export const UnitsTable = ({ units, courseId, moduleId, isLoading }: Props) => {
                 <div
                   className={
                     classNames(
-                      "flex items-center gap-1.5 font-normal text-base px-5 py-4 bg-light-blue text-left",
+                      "flex items-center gap-1.5 font-normal text-base px-5 py-4 bg-light-blue text-left whitespace-nowrap overflow-hidden",
                       {
                         "rounded-l-[8px]": index === 0,
                       }
@@ -78,7 +78,7 @@ export const UnitsTable = ({ units, courseId, moduleId, isLoading }: Props) => {
             ))}
             <th
               key="courses-table-actions"
-              className="py-1 w-full"
+              className="py-1 w-[20%]"
             >
               <div className="font-normal text-left text-base px-5 py-4 bg-light-blue rounded-r-[8px]">
                 Actions
@@ -97,7 +97,7 @@ export const UnitsTable = ({ units, courseId, moduleId, isLoading }: Props) => {
             {row.getVisibleCells().map((cell, index) => (
               <td
                 key={cell.id}
-                className="py-1"
+                className="py-1 overflow-hidden"
               >
                 <Link
                   to={
@@ -108,13 +108,14 @@ export const UnitsTable = ({ units, courseId, moduleId, isLoading }: Props) => {
                       .replace(":unitId", String(row.original.id))
                     }`
                   }
+                  className="block min-w-0 overflow-hidden"
                 >
                   <div
                     className={
                     classNames(
                       "min-h-[68px] font-normal text-base px-5 py-4 border-light-blue! border-t! border-b!",
                       "group-hover:bg-grey group-hover:border-primary! transition-colors duration-300",
-                      "flex items-center",
+                      "flex items-center min-w-0 overflow-hidden",
                       {
                         "border-l! rounded-l-[8px]!": index === 0,
                       }

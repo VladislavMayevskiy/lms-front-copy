@@ -122,26 +122,26 @@ const onSubmit = async (data: InvoiceForm) => {
                 postal_code: t("general.labels.postalCode", "Postal code"),
               };
               return (
-                <Controller
-                  key={name}
-                  control={control}
+              <Controller
+                key={name}
+                control={control}
                   name={name}
-                  rules={{ required: true }}
-                  render={({ field }) => (
-                    <Box>
-                      <Text fontSize="14px" fontWeight="bold">
+                rules={{ required: true }}
+                render={({ field }) => (
+                  <Box>
+                    <Text fontSize="14px" fontWeight="bold">
                         {labelMap[name]} *
-                      </Text>
-                      <Input
-                        {...field}
-                        h="44px"
-                        borderRadius="10px"
-                        bg="#F5F7F9"
-                        borderColor="#B4D6DF"
-                      />
-                    </Box>
-                  )}
-                />
+                    </Text>
+                    <Input
+                      {...field}
+                      h="44px"
+                      borderRadius="10px"
+                      bg="#F5F7F9"
+                      borderColor="#B4D6DF"
+                    />
+                  </Box>
+                )}
+              />
               );
             })}
 

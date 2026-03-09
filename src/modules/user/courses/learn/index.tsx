@@ -8,12 +8,13 @@ import {
   VStack,
   Progress,
 } from "@chakra-ui/react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   useCompleteUnit,
   useShowCourse,
   useGetQuiz,
+  useGetQuizResult,
   useSubmitQuiz,
 } from "api/user/courses/hooks";
 import type { FinalQuizSubmitPayload } from "api/user/courses/types";
@@ -31,6 +32,12 @@ import SectionRenderer from "../components/render";
 import { useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { Spinner } from "components/ui/spinner";
+import { authStore } from "stores/authStore";
+import {
+  saveCourseProgress,
+  loadCourseProgress,
+  clearCourseProgress,
+} from "utils/courseProgress";
 
 type UnitUiStatus = "continue" | "completed" | "locked";
 
@@ -57,18 +64,29 @@ function extractQuestions(quiz: any): any[] {
 
 function UnitQuizStep({
   unitId,
+  courseId,
   courseName,
   onBack,
   onNoQuiz,
   onSuccess,
 }: {
   unitId: number;
+  courseId: number;
   courseName?: string;
   onBack: () => void;
   onNoQuiz: () => Promise<void>;
   onSuccess: () => Promise<void>;
 }) {
   const { data: quiz, isLoading, isFetching, isFetched, isSuccess, isError, error, refetch} = useGetQuiz(unitId);
+
+  const {
+    data: existingResult,
+    isLoading: isResultLoading,
+    isFetched: isResultFetched,
+  } = useGetQuizResult(unitId);
+
+  const quizAlreadyCompleted =
+    isResultFetched && !!(existingResult as any)?.data?.id;
 
   const { t } = useTranslation();
   const { mutateAsync: submitQuiz, isPending } = useSubmitQuiz(unitId);
@@ -85,6 +103,12 @@ function UnitQuizStep({
   const isNoQuiz = isFetched && (noQuizBy404 || noQuizByEmpty);
 
   const canSubmit = hasQuiz && questions.length === Object.keys(selected).length;
+
+  useEffect(() => {
+    return () => {
+      noQuizAutoCache.delete(String(unitId));
+    };
+  }, [unitId]);
 
   useEffect(() => {
     if (unitId <= 0) return;
@@ -113,7 +137,7 @@ function UnitQuizStep({
     await onSuccess();
   };
 
-  if (isLoading || isFetching || autoContinuing) {
+  if (isLoading || isFetching || autoContinuing || isResultLoading) {
     return (
       <Box>
         <Heading fontFamily="Lato" fontSize="20px" fontWeight="bold" mb={3}>
@@ -146,6 +170,18 @@ function UnitQuizStep({
           </Button>
         </HStack>
       </Box>
+    );
+  }
+
+  if (quizAlreadyCompleted) {
+    return (
+      <UnitQuizResultContent
+        unitId={unitId}
+        courseId={courseId}
+        showCourseTitle={false}
+        onBack={onBack}
+        onContinue={onSuccess}
+      />
     );
   }
 
@@ -260,11 +296,15 @@ function LearnCourse() {
   const navigate = useNavigate();
   const qc = useQueryClient();
 
+  const userId = authStore((s) => s.user?.id);
+
   const { data: course, isLoading } = useShowCourse(courseId);
-  const { mutateAsync: completeUnit ,isPending: isCompletingUnit  } = useCompleteUnit(courseId);
+  const { mutateAsync: completeUnit } = useCompleteUnit(courseId);
 
   const [openModule, setOpenModule] = useState<number | null>(null);
   const [step, setStep] = useState<Step>("unit");
+  const [progressRestored, setProgressRestored] = useState(false);
+  const pendingStepRef = useRef<Step | null>(null);
 
   const isCourseCompleted =
     course?.progress_status === 3 || Number(course?.progress) >= 100;
@@ -337,8 +377,59 @@ function LearnCourse() {
   const currentUnit = currentFlat?.unit ?? null;
 
   useEffect(() => {
-    setStep("unit");
+    if (isLoading) return;
+    if (progressRestored) return;
+
+    if (!userId) {
+      setProgressRestored(true);
+      return;
+    }
+
+    const saved = loadCourseProgress(userId, courseId);
+
+    if (saved) {
+      const unitExists = flatUnits.some((f) => f.unit.id === saved.unitId);
+      const targetUnitId = unitExists ? saved.unitId : null;
+
+      if (targetUnitId) {
+        if (saved.step === "quiz") {
+          pendingStepRef.current = "quiz";
+        }
+
+        if (!activeUnitId) {
+          navigate(`/learn/${courseId}/${targetUnitId}`, { replace: true });
+        }
+      }
+    }
+
+    setProgressRestored(true);
+  }, [isLoading, progressRestored, flatUnits, activeUnitId, courseId, userId, navigate]);
+
+  useEffect(() => {
+    if (pendingStepRef.current) {
+      setStep(pendingStepRef.current);
+      pendingStepRef.current = null;
+    } else {
+      setStep("unit");
+    }
   }, [currentUnit?.id]);
+
+  useEffect(() => {
+    if (!progressRestored) return;
+    if (!currentUnit?.id || !userId) return;
+    if (step === "results") return;
+
+    saveCourseProgress(userId, courseId, {
+      unitId: currentUnit.id,
+      step: step as "unit" | "quiz",
+    });
+  }, [currentUnit?.id, step, progressRestored, userId, courseId]);
+
+  useEffect(() => {
+    if (isCourseCompleted && userId) {
+      clearCourseProgress(userId, courseId);
+    }
+  }, [isCourseCompleted, userId, courseId]);
 
   const normalizedUnit = useMemo(() => {
     if (!currentUnit || !currentUnit.sections) return null;
@@ -410,25 +501,15 @@ function LearnCourse() {
     setStep("results");
   };
 
-  const onEndCourse = async () => {
-  if (!currentUnit) return;
-
-  if (!isCourseCompleted) {
-    await completeUnitOnce(currentUnit.id);
-    await qc.invalidateQueries({ queryKey: ["course", courseId] });
-  }
-
-  setStep("results");
-};
-
-
   const goNext = () => setStep("quiz");
 
-  if (isLoading)
+  const pendingRestore = !progressRestored && !activeUnitId;
+
+  if (isLoading || pendingRestore)
     return (
       <UserLayout>
         <div className="flex justify-center items-center h-full">
-          {isLoading && <Spinner isLoading={isLoading} />}
+          <Spinner isLoading />
         </div>
       </UserLayout>
     );
@@ -456,7 +537,7 @@ function LearnCourse() {
           className="lms-box w-full md:w-2/3 md:min-h-[892px]"
         >
           {currentUnit && (
-            <Heading fontFamily="Lato" fontSize="32px" fontWeight="medium" mb={4}>
+            <Heading fontFamily="Lato" fontSize="32px" fontWeight="medium" mb={4} noOfLines={2}>
               {currentFlat ? `Unit ${currentFlat.unitIndex + 1}: ` : ""}
               {currentUnit.name}
             </Heading>
@@ -492,7 +573,7 @@ function LearnCourse() {
 
           {step === "unit" ? (
             <>
-              <Text fontSize="14px" fontFamily="Lato" color="#434645" mb={4}>
+              <Text fontSize="14px" fontFamily="Lato" color="#434645" mb={4} noOfLines={4}>
                 {currentUnit?.description}
               </Text>
 
@@ -511,9 +592,7 @@ function LearnCourse() {
                     textColor="white"
                     borderRadius="10px"
                     _hover={{ bg: "#005A9E" }}
-                    onClick={() => {if (!nextFlat) { onEndCourse(); return;} goNext();}}
-                    isLoading={!nextFlat && isCompletingUnit}
-                    isDisabled={!nextFlat && isCompletingUnit}
+                    onClick={goNext}
                   >
                     {actionLabel}
                   </Button>
@@ -526,6 +605,7 @@ function LearnCourse() {
 
               <UnitQuizStep
                 unitId={currentUnit.id}
+                courseId={courseId}
                 courseName={course.name}
                 onBack={() => setStep("unit")}
                 onNoQuiz={async () => {
@@ -566,7 +646,7 @@ function LearnCourse() {
             borderBottom={"1px"}
             borderColor={"#B4D6DF"}
           >
-            <Heading fontFamily={"Lato"} fontSize={"20px"} fontWeight={"medium"}>
+            <Heading fontFamily={"Lato"} fontSize={"20px"} fontWeight={"medium"} noOfLines={2}>
               {course.name}
             </Heading>
 
@@ -608,11 +688,11 @@ function LearnCourse() {
               return (
                 <Box key={module.id} mb={4}>
                   <VStack align="start">
-                    <Text fontWeight="bold" fontSize="15px" fontFamily="Lato">
+                    <Text fontWeight="bold" fontSize="15px" fontFamily="Lato" noOfLines={2}>
                       {t("user.courses.learn.module")} {index + 1}: {module.name}
                     </Text>
 
-                    <Text fontSize="14px" fontFamily="Lato" color="gray.500">
+                    <Text fontSize="14px" fontFamily="Lato" color="gray.500" noOfLines={2}>
                       {module.description}
                     </Text>
 
@@ -652,9 +732,9 @@ function LearnCourse() {
                                 openUnit(unit.id);
                               }}
                             >
-                              <HStack spacing={2}>
-                                <Icon />
-                                <Heading fontFamily="Lato" fontSize="15px" fontWeight="medium">
+                              <HStack spacing={2} overflow="hidden" minW={0} flex={1}>
+                                <Icon style={{ flexShrink: 0 }} />
+                                <Heading fontFamily="Lato" fontSize="15px" fontWeight="medium" noOfLines={1} overflow="hidden">
                                   {t("user.courses.learn.unit")} {uIndex + 1}: {unit.name}
                                 </Heading>
                               </HStack>

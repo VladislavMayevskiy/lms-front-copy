@@ -14,7 +14,7 @@ import {
   flexRender
 } from "@tanstack/react-table";
 
-import { useGetStudentCourse } from "api/user/hooks";
+import { useTeacherStudentCourses } from "api/user/hooks";
 import { Spinner } from "components/ui/spinner";
 import { StudentsCourseColumn } from "./constants/studentsCourseTable";
 import Sorting from "assets/imgs/admin/sorting.svg?react";
@@ -23,14 +23,13 @@ import UserLayout from "components/ui/layouts/user";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { UserRoutes } from "constants/routes";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 type SortDirection = "asc" | "desc" | null;
 
 function StudentsCourse() {
   const [sortDirection, setSortDirection] = useState<SortDirection>(null);
   const [search, setSearch] = useState("");
-  const [apiSearch, setApiSearch] = useState<string | undefined>(undefined);
   const navigate = useNavigate();
 
   const { id } = useParams<{ id: string }>();
@@ -44,18 +43,21 @@ function StudentsCourse() {
     });
   };
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setApiSearch(search.trim() || undefined);
-    }, 300);
+  const { data, isLoading, isFetching } = useTeacherStudentCourses(studentId);
 
-    return () => clearTimeout(timer);
-  }, [search]);
-
-  const apiSort = sortDirection === "desc" ? "-name" : sortDirection === "asc" ? "name" : undefined;
-
-  const { data , isLoading, isFetching } = useGetStudentCourse(studentId, apiSort, apiSearch);
-  const studentsCourse = data?.data ?? [];
+  const rawCourses = data?.data ?? [];
+  const filtered = rawCourses
+    .filter((c) =>
+      search.trim()
+        ? c.name.toLowerCase().includes(search.trim().toLowerCase())
+        : true,
+    )
+    .sort((a, b) => {
+      if (sortDirection === "asc") return a.name.localeCompare(b.name);
+      if (sortDirection === "desc") return b.name.localeCompare(a.name);
+      return 0;
+    });
+  const studentsCourse = filtered;
 
   const table = useReactTable({
   data: studentsCourse,
@@ -89,6 +91,7 @@ function StudentsCourse() {
             </InputLeftElement>
             <Input
               placeholder="Search"
+              maxLength={12}
               onChange={(e) => setSearch(e.target.value)}
             />
           </InputGroup>
@@ -152,7 +155,14 @@ function StudentsCourse() {
         >
           <HStack justify="space-between">
             {row.getVisibleCells().map((cell) => (
-              <Box key={cell.id} w="full" onClick={() =>navigate( UserRoutes.quiz.replace(":id", String(studentId)).replace(":courseId", String(row.original.id)))}>
+              <Box
+                key={cell.id}
+                w="full"
+                minW={0}
+                overflow="hidden"
+                cursor="pointer"
+                onClick={() => navigate(UserRoutes.quiz.replace(":id", String(studentId)).replace(":courseId", String(row.original.id)))}
+              >
                 {flexRender(cell.column.columnDef.cell, cell.getContext())}
               </Box>
             ))}

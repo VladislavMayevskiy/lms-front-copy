@@ -33,7 +33,7 @@ export const CoursesTable = ({ courses, isLoading }: Props) => {
   });
 
   return (
-    <table>
+    <table className="w-full table-fixed">
       <thead>
         {getHeaderGroups().map((headerGroup) => (
           <tr key={headerGroup.id}>
@@ -50,7 +50,7 @@ export const CoursesTable = ({ courses, isLoading }: Props) => {
                 <div
                   className={
                     classNames(
-                      "flex items-center gap-1.5 font-normal text-base px-5 py-4 bg-light-blue text-left",
+                      "flex items-center gap-1.5 font-normal text-base px-5 py-4 bg-light-blue text-left whitespace-nowrap overflow-hidden",
                       {
                         "rounded-l-[8px]": index === 0,
                       }
@@ -67,7 +67,7 @@ export const CoursesTable = ({ courses, isLoading }: Props) => {
             ))}
             <th
               key="courses-table-actions"
-              className="py-1 w-full"
+              className="py-1 w-[13%]"
             >
               <div className="font-normal text-left text-base px-5 py-4 bg-light-blue rounded-r-[8px]">
                 Actions
@@ -96,6 +96,7 @@ export const CoursesTable = ({ courses, isLoading }: Props) => {
                     "flex items-center",
                     {
                       "border-l! rounded-l-[8px]!": index === 0,
+                      "min-w-0 overflow-hidden": index === 0,
                     }
                   )}
                 >

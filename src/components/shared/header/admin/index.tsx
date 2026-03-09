@@ -2,7 +2,7 @@ import { HStack, Button } from "@chakra-ui/react";
 import { NavLink } from "react-router-dom";
 import { Menu } from "./Menu";
 import { LogoutModal } from "./LogoutModal";
-import Logo from "assets/imgs/authLogo.svg?react";
+import Logo from "components/ui/logo";
 import { tabs } from "constants/tabs";
 import { authStore } from "stores/authStore";
 
@@ -19,7 +19,7 @@ export default function AdminHeader() {
   const role = user?.role || "CourseProvider";
 
   return (
-    <HStack justify={"space-between"} px="60px" py="20px" bg="white">
+    <HStack justify={"space-between"} px="60px" py="20px" bg="white" maxH={'120px'}>
       <HStack spacing="20px">
         <Logo />
         {tabs[role].map((tab) => (

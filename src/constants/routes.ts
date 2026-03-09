@@ -53,4 +53,6 @@ export const AuthRoutes = {
   login: "/login",
   createAccount: "/create-account",
   forgotPassword: "/forgot-password",
+  privacyPolicy: "/privacy-policy",
+  termsAndConditions: "/terms-and-conditions",
 };

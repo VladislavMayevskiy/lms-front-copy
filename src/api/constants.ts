@@ -67,7 +67,10 @@ export const UserApiRoutes = {
   finishUnit: (unitId: number) => `${ApiBase}/units/${unitId}/complete`,
   purchaseCourse: (courseId: number) => `${ApiBase}/courses/${courseId}/purchase`,
   quiz_result: (unitId: number) => `${ApiBase}/units/${unitId}/quiz-result`,
-  students: `${ApiBase}/students`,
-  studentCourse: (userId: number) =>  `${ApiBase}/students/${userId}/courses`,
-  studentQuiz: (userId: number, courseId: number) => `${ApiBase}/students/${userId}/courses/${courseId}/quiz-results`
+  quizAnalyticsCourse: (courseId: number) => `${ApiBase}/teacher/courses/${courseId}/quiz-analytics`,
+  quizAnalyticsUnit: (unitId: number) => `${ApiBase}/teacher/units/${unitId}/quiz-analytics`,
+  teacherStudents: `${ApiBase}/teacher/students`,
+  teacherStudentCourses: (userId: number) => `${ApiBase}/teacher/students/${userId}/courses`,
+  teacherStudentCourseQuizResults: (userId: number, courseId: number) =>
+    `${ApiBase}/teacher/students/${userId}/courses/${courseId}/quiz-results`,
 };

@@ -130,7 +130,9 @@ export const EditorHeader = () => {
         Back
       </Button>
 
-      <h2 className="font-normal text-[20px] font-[Lato]">{data.name}</h2>
+      <div className="flex-1 min-w-0 px-4 text-center">
+        <h2 className="font-normal text-[20px] font-[Lato] truncate whitespace-nowrap overflow-hidden">{data.name}</h2>
+      </div>
 
       <div className="flex items-center gap-8">
         <div className="flex items-center gap-2.5">

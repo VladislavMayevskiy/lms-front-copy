@@ -1,6 +1,13 @@
 import { client } from "api";
-import type { ChangePasswordType, ActivityResponse} from "./types";
+import type {
+  ChangePasswordType,
+  ActivityResponse,
+  TeacherStudentsResponse,
+  TeacherStudentCoursesResponse,
+  TeacherStudentCourseQuizResultsResponse,
+} from "./types";
 import { UserApiRoutes } from "api/constants";
+
 
 export const UpdatePasswordUser = async (data: ChangePasswordType) => {
     const response = await client.put(UserApiRoutes.password, data)
@@ -34,27 +41,34 @@ export const getActivity = async (): Promise<ActivityResponse> => {
   return response.data;
 };
 
-export const GetStudents = async (sort?: string, search?: string) => {
-  const response = await client.get(UserApiRoutes.students, {
-    params: {
-      ...(sort && { sort }),
-      ...(search && { "filter[search]": search }),
-    },
-  })
+export const GetQuizAnalyticsCourse = async (courseId: number) => {
+  const response = await client.get(UserApiRoutes.quizAnalyticsCourse(courseId))
   return response.data
 }
 
-export const GetStudentCourse = async ( userId: number, sort?: string, search?: string ) => {
-  const response = await client.get(UserApiRoutes.studentCourse(userId), {
-    params: {
-      ...(sort && { sort }),
-      ...(search && { "filter[search]": search }),
-    },
-  })
+export const GetQuizAnalyticsUnit = async (unitId: number) => {
+  const response = await client.get(UserApiRoutes.quizAnalyticsUnit(unitId))
   return response.data
 }
 
-export const GetStudentQuiz = async ( userId: number, courseId: number ) => {
-  const response = await client.get(UserApiRoutes.studentQuiz(userId,courseId))
-  return response.data
-}
+export const GetTeacherStudents = async (): Promise<TeacherStudentsResponse> => {
+  const response = await client.get(UserApiRoutes.teacherStudents);
+  return response.data;
+};
+
+export const GetTeacherStudentCourses = async (
+  userId: number,
+): Promise<TeacherStudentCoursesResponse> => {
+  const response = await client.get(UserApiRoutes.teacherStudentCourses(userId));
+  return response.data;
+};
+
+export const GetTeacherStudentCourseQuizResults = async (
+  userId: number,
+  courseId: number,
+): Promise<TeacherStudentCourseQuizResultsResponse> => {
+  const response = await client.get(
+    UserApiRoutes.teacherStudentCourseQuizResults(userId, courseId),
+  );
+  return response.data;
+};

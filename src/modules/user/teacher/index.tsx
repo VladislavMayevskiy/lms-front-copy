@@ -1,163 +1,95 @@
-import { UserBox } from "components/ui/layouts/user";
+import { useState, useCallback, useTransition } from "react";
 import {
-  Box,
   Text,
   HStack,
-  Input,
-  InputGroup,
-  InputLeftElement,
-  VStack
+  VStack,
+  Select,
+  Spinner as ChakraSpinner,
 } from "@chakra-ui/react";
-import {
-  getCoreRowModel,
-  useReactTable,
-  flexRender
-} from "@tanstack/react-table";
-import { useNavigate } from "react-router-dom";
-import { Spinner } from "components/ui/spinner";
-import { StudentsColumn } from "./constants/studentsTable";
-import Sorting from "assets/imgs/admin/sorting.svg?react";
-import Search from "assets/imgs/admin/search.svg?react";
-import UserLayout from "components/ui/layouts/user";
-import { useGetStudents } from "api/user/hooks";
-import { UserRoutes } from "constants/routes";
-import { useState, useEffect } from "react";
 
-type SortDirection = "asc" | "desc" | null;
+import UserLayout, { UserBox } from "components/ui/layouts/user";
+
+import { useGetCourses } from "api/user/courses/hooks";
+
+import AtRiskStudents from "./components/AtRiskStudents";
+import CourseAnalyticsCard from "./components/CourseAnalyticsCard";
+import CourseStudentsList from "./components/CourseStudentsList";
+import UnitAnalyticsBlock from "./components/UnitAnalyticsBlock";
+
 
 function Teacher() {
-  const [sortDirection, setSortDirection] = useState<SortDirection>(null);
-  const [search, setSearch] = useState("");
-  const [apiSearch, setApiSearch] = useState<string | undefined>(undefined);
-  const navigate = useNavigate();
+  const [isPending, startTransition] = useTransition();
+  const [selectedCourseId, setSelectedCourseId] = useState<number | null>(null);
 
-  const handleSort = () => {
-    setSortDirection((prev) => {
-      if (prev === null) return "asc";
-      if (prev === "asc") return "desc";
-      return null;
-    });
-  };
+  const { data: courses, isLoading: isCoursesLoading } = useGetCourses();
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setApiSearch(search.trim() || undefined);
-    }, 300);
-
-    return () => clearTimeout(timer);
-  }, [search]);
-
-  const apiSort = sortDirection === "desc" ? "-name" : sortDirection === "asc" ? "name" : undefined;
-
-  const { data , isLoading, isFetching } = useGetStudents(apiSort, apiSearch);
-  const students = data?.data ?? [];
-
-  const table = useReactTable({
-  data: students,
-  columns: Array.isArray(StudentsColumn) ? StudentsColumn : [],
-  getCoreRowModel: getCoreRowModel(),
-});
-
-
-  if (isLoading) {
-    return (
-      <UserLayout>
-        <Spinner isLoading={isLoading} />
-      </UserLayout>
-    );
-  }
+  const handleCourseChange = useCallback(
+    (e: React.ChangeEvent<HTMLSelectElement>) => {
+      const val = e.target.value;
+      startTransition(() => {
+        setSelectedCourseId(val ? Number(val) : null);
+      });
+    },
+    [startTransition],
+  );
 
   return (
-    
     <UserLayout title="Community Academics Association Prime District">
+      <VStack spacing={6} align="stretch">
+
       <UserBox>
-      <HStack justify="space-between" mb={4}>
-        <Text fontFamily="Lato" fontWeight="medium" fontSize="20px">
-          {table.getFilteredRowModel().rows.length} Students
-        </Text>
-
-        <HStack>
-          
-          <InputGroup width={"320px"}>
-            <InputLeftElement>
-              <Search />
-            </InputLeftElement>
-            <Input
-              placeholder="Search"
-              onChange={(e) => setSearch(e.target.value)}
-            />
-          </InputGroup>
-
-          {/* <Button
-            bg="#F5F7F9"
-            border="1px solid #B4D6DF"
-            borderRadius="6px"
-            h="40px"
-            w="101px"
-            leftIcon={<Sort />}
-            textColor="#0070C1"
-          >
-            Filter
-          </Button> */}
-        </HStack>
-      </HStack>
-
-      <Box mb={4} width="full" height="56px" bgColor="#DDECF7" borderRadius="8px">
-        <HStack px="20px" py="16px">
-          <HStack 
-            width="full"
-            cursor={isFetching ? "not-allowed" : "pointer"}
-            pointerEvents={isFetching ? "none" : "auto"}
-            onClick={handleSort}
-          >
-            <Text fontFamily="Lato" fontSize="16px" color="#434645">
-              Name
+        <HStack justify="space-between" flexWrap="wrap" rowGap={2}>
+          <VStack align="flex-start" spacing={0}>
+            <Text fontFamily="Lato" fontWeight="semibold" fontSize="18px">
+              Select a Course
             </Text>
-            <Sorting 
-              style={{
-                opacity: sortDirection ? 1 : 0.4,
-                transform: sortDirection === "desc" ? "rotate(180deg)" : "none",
-                transition: "0.2s",
-              }}
-            />
+            <Text fontFamily="Lato" fontSize="13px" color="#718096">
+              Analytics, students and risk reports below filter to this course.
+            </Text>
+          </VStack>
+
+          <HStack spacing={3}>
+            {(isCoursesLoading || isPending) && (
+              <ChakraSpinner size="sm" color="#0070C1" />
+            )}
+            <Select
+              placeholder="Pick a course to analyse"
+              width="340px"
+              fontFamily="Lato"
+              fontSize="14px"
+              borderColor="#B4D6DF"
+              borderRadius="8px"
+              isDisabled={isCoursesLoading || isPending}
+              value={selectedCourseId ?? ""}
+              onChange={handleCourseChange}
+            >
+              {(courses ?? []).map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name}
+                </option>
+              ))}
+            </Select>
           </HStack>
-
-          <Text width="full" fontFamily="Lato" fontSize="16px" color="#434645">
-            Phone
-          </Text>
-
-          <Text width="full" fontFamily="Lato" fontSize="16px" color="#434645">
-            Email
-          </Text>
-
         </HStack>
-      </Box>
-
-      <VStack spacing="6px" mt="5px">
-      {table.getRowModel().rows.map((row) => (
-        <Box
-          key={row.id}
-          px="20px"
-          py="20px"
-          width="full"
-          height="62px"
-          bgColor="white"
-          borderColor="#D7E8EE"
-          borderWidth="1px"
-          borderRadius="8px"
-          ml={-1}
-        >
-          <HStack justify="space-between">
-            {row.getVisibleCells().map((cell) => (
-              <Box key={cell.id} w="full" onClick={() => navigate(UserRoutes.studentCourse.replace(":id",String(row.original.id) ))}>
-                {flexRender(cell.column.columnDef.cell, cell.getContext())}
-              </Box>
-            ))}
-          </HStack>
-        </Box>
-      ))}
-      </VStack>
       </UserBox>
+
+      <UserBox>
+        <CourseAnalyticsCard courseId={selectedCourseId} />
+      </UserBox>
+
+      <UserBox>
+        <AtRiskStudents courseId={selectedCourseId} />
+      </UserBox>
+
+      <UserBox>
+        <CourseStudentsList />
+      </UserBox>
+
+      <UserBox>
+        <UnitAnalyticsBlock courseId={selectedCourseId} />
+      </UserBox>
+
+      </VStack>
     </UserLayout>
   );
 }
