@@ -63,3 +63,9 @@ export const deleteUnitQuiz = async (unitId: number): Promise<void> => {
 
   return response.data;
 };
+
+export const generateUnitQuiz = async ({ unitId, params }: { unitId: number; params: { questions_count: number } }) => {
+  const response = await client.post(CourseProviderApiRoutes.generateQuiz(unitId), params);
+
+  return response.data;
+};

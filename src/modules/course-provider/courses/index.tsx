@@ -12,6 +12,7 @@ import {
 } from "components/shared/courseProvider/courses/components/modals";
 import PlusIcon from "assets/imgs/plus.svg?react";
 import { useModal, CourseProviderModalConsts } from "hooks/courseProvider/useModal";
+import { TranslationsModal } from "components/shared/courseProvider/translations/TranslationsModal";
 
 function CourseProviderCourses() {
   const openModal = useModal((state) => state.openModal);
@@ -37,6 +38,7 @@ function CourseProviderCourses() {
       <CreateCourseModal />
       <DeleteCourse />
       <AssignedSchoolsModal />
+      <TranslationsModal />
     </CourseProviderLayout>
   );
 };

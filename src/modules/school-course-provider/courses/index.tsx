@@ -6,6 +6,7 @@ import {
 } from "components/ui/layouts/courseProvider";
 import { CoursesList } from "components/shared/schoolCourseProvider/courses/components/CoursesList";
 import { CreateCourseModal, DeleteCourse } from "components/shared/schoolCourseProvider/courses/components/modals";
+import { TranslationsModal } from "components/shared/courseProvider/translations/TranslationsModal";
 import PlusIcon from "assets/imgs/plus.svg?react";
 import { useModal, CourseProviderModalConsts } from "hooks/courseProvider/useModal";
 
@@ -32,6 +33,7 @@ function CourseProviderCourses() {
       </ContentLayout>
       <CreateCourseModal />
       <DeleteCourse />
+      <TranslationsModal />
     </CourseProviderLayout>
   );
 };

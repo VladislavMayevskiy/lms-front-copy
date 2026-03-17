@@ -1,4 +1,4 @@
-import { useMemo, useCallback, useState } from "react";
+import { useMemo, useCallback, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { MainButton } from "components/ui/button";
 // import EyeIcon from "assets/imgs/courseProvider/eye.svg?react";
@@ -20,21 +20,21 @@ export const EditorHeader = () => {
 
   const [isSaveLoading, setIsSaveLoading] = useState(false);
   const [isPublishLoading, setIsPublishLoading] = useState(false);
-
-  if (!data) return null;
+  const imageFileRef = useRef<File | null>(null);
 
   const course: CourseSchema = useMemo(
     () => ({
-      type: CourseTypeIds[data.type],
-      status: CourseStatusIds[data.status],
-      name: data.name,
-      description: data.description,
-      duration: (data.duration || 0).toString(),
-      instructor: data.instructor,
-      position: data.position,
-      about: data.about || "",
-      achievements: data.achievements || "",
-      schools: (data.schools || []).map(({ id }) => id),
+      type: CourseTypeIds[data?.type],
+      status: CourseStatusIds[data?.status],
+      name: data?.name ?? "",
+      description: data?.description ?? "",
+      duration: (data?.duration || 0).toString(),
+      instructor: data?.instructor ?? "",
+      position: data?.position ?? 0,
+      about: data?.about || "",
+      achievements: data?.achievements || "",
+      schools: (data?.schools || []).map(({ id }) => id),
+      languages: data?.languages || [],
       image: null,
     }),
     [data]
@@ -44,11 +44,12 @@ export const EditorHeader = () => {
 
   useFile({
     fileName,
-    fileUrl: data.image,
-    setFile: (file) => (course.image = file),
+    fileUrl: data?.image,
+    setFile: (file) => { imageFileRef.current = file; },
   });
 
   const handlePublish = useCallback(() => {
+    if (!data) return;
     setIsPublishLoading(true);
 
     const formData = new FormData();
@@ -56,11 +57,15 @@ export const EditorHeader = () => {
     Object.keys(course).forEach((key: unknown) => {
       const formKey = key as keyof typeof course;
 
-      if (course[formKey] && formKey === "image") {
-        formData.append(`${formKey}`, course[formKey]);
-      } else if (course[formKey] && formKey === "schools") {
-        course[formKey].forEach((schoolId, index) => {
+      if (formKey === "image") {
+        if (imageFileRef.current) formData.append(`${formKey}`, imageFileRef.current);
+      } else if (formKey === "schools") {
+        (course[formKey] as number[]).forEach((schoolId, index) => {
           formData.append(`${formKey}[${index}]`, schoolId.toString());
+        });
+      } else if (formKey === "languages") {
+        (course[formKey] as string[]).forEach((code, index) => {
+          formData.append(`${formKey}[${index}]`, code);
         });
       } else if (formKey === "status") {
         const newStatus =
@@ -86,6 +91,7 @@ export const EditorHeader = () => {
   }, [course, data, editCourse]);
 
   const handleSaveDraft = useCallback(() => {
+    if (!data) return;
     setIsSaveLoading(true);
 
     const formData = new FormData();
@@ -93,11 +99,15 @@ export const EditorHeader = () => {
     Object.keys(course).forEach((key: unknown) => {
       const formKey = key as keyof typeof course;
 
-      if (course[formKey] && formKey === "image") {
-        formData.append(`${formKey}`, course[formKey]);
-      } else if (course[formKey] && formKey === "schools") {
-        course[formKey].forEach((schoolId, index) => {
+      if (formKey === "image") {
+        if (imageFileRef.current) formData.append(`${formKey}`, imageFileRef.current);
+      } else if (formKey === "schools") {
+        (course[formKey] as number[]).forEach((schoolId, index) => {
           formData.append(`${formKey}[${index}]`, schoolId.toString());
+        });
+      } else if (formKey === "languages") {
+        (course[formKey] as string[]).forEach((code, index) => {
+          formData.append(`${formKey}[${index}]`, code);
         });
       } else if (formKey === "status") {
         const newStatus = CourseStatusIds.Draft;
@@ -117,6 +127,8 @@ export const EditorHeader = () => {
       }
     );
   }, [course, data, editCourse]);
+
+  if (!data) return null;
 
   const isAnyLoading = isSaveLoading || isPublishLoading || isPending;
 

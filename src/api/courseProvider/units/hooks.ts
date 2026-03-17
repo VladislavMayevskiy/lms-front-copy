@@ -9,6 +9,7 @@ import {
   getUnitQuiz,
   updateUnitQuiz,
   deleteUnitQuiz,
+  generateUnitQuiz,
 } from "./index";
 import { mapFromUnits, mapFromUnit } from "./utils";
 import type {
@@ -18,6 +19,8 @@ import type {
   ApiUnitsListParams,
   ApiQuizTypeResponse,
   ApiUpdateQuizErrorResponse,
+  ApiGenerateQuizResponse,
+  ApiGenerateQuizErrorResponse,
 } from "./types";
 import type { UnitSchema } from "components/shared/courseProvider/units/validation/unit.schema";
 import type { QuizSchema } from "components/shared/courseProvider/editor/components/modals/quiz/validation/quiz.schema";
@@ -127,5 +130,16 @@ export const useDeleteUnitQuiz = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['unit-quiz'] });
     },
+  });
+};
+
+export const useGenerateUnitQuiz = () => {
+  return useMutation<
+    ApiGenerateQuizResponse,
+    ApiGenerateQuizErrorResponse,
+    { unitId: number; params: { questions_count: number } }
+  >({
+    mutationKey: ['generate-unit-quiz'],
+    mutationFn: generateUnitQuiz,
   });
 };

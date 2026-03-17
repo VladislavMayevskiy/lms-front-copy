@@ -11,6 +11,7 @@ export const courseFormSchema = z.object({
   about: z.string(),
   status: z.number(),
   achievements: z.string(),
+  languages: z.array(z.string()),
   image: z.custom<File>().nullable(),
 });
 

@@ -12,6 +12,7 @@ import { Link } from "react-router-dom";
 import { TableLoading } from "components/ui/tableLoading";
 import Edit from "assets/imgs/admin/edit.svg?react"
 import Delete from "assets/imgs/admin/trash.svg?react"
+import TranslateIcon from "assets/imgs/admin/translate.svg?react"
 // import DirectionsIcon from "assets/imgs/admin/sorting.svg?react";
 import classNames from "classnames";
 import { columns } from "../constants/coursesTable";
@@ -19,6 +20,7 @@ import { SchoolCourseProviderRoutes } from "constants/routes";
 import type { CourseListType } from "types/models/Course";
 import { useCourseStore } from "../hooks/useCourse";
 import { useModal, CourseProviderModalConsts } from "hooks/courseProvider/useModal";
+import { useTranslationsModal } from "components/shared/courseProvider/translations/useTranslationsModal";
 
 type Props = {
   courses: CourseListType[];
@@ -28,6 +30,7 @@ type Props = {
 export const CoursesTable = ({ courses, isLoading }: Props) => {
   const openModal = useModal((store) => store.openModal);
   const setCourse = useCourseStore((store) => store.setCourse);
+  const openTranslationsModal = useTranslationsModal((store) => store.openModal);
   const { getHeaderGroups, getRowModel } = useReactTable({
     columns,
     data: courses,
@@ -159,6 +162,25 @@ export const CoursesTable = ({ courses, isLoading }: Props) => {
                   >
                     <Box>
                       <Delete width={"20px"} height={"20px"}/>
+                    </Box>
+                  </Button>
+
+                  <Button
+                    w="40px"
+                    h="40px"
+                    borderRadius="6px"
+                    borderWidth="1px"
+                    bg="white"
+                    _hover={{ bgColor: "white" }}
+                    borderColor={"#B4D6DF"}
+                    title="Edit translations"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      openTranslationsModal("course", row.original.id, row.original.name);
+                    }}
+                  >
+                    <Box>
+                      <TranslateIcon width={"20px"} height={"20px"}/>
                     </Box>
                   </Button>
                 </HStack>
