@@ -50,6 +50,7 @@ export const Menu = ({ user }: Props) => {
           <Avatar
             firstName={user?.first_name || ''}
             lastName={user?.last_name || ''}
+            avatar={user?.image}
           />
           <div className="flex flex-col">
             <span className="text-sm font-semibold">{`${user?.first_name} ${user?.last_name}`}</span>

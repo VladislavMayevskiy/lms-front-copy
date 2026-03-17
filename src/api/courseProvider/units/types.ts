@@ -50,3 +50,16 @@ export type ApiUpdateQuizErrorResponse = AxiosError<{
   message: string;
   errors: Record<keyof QuizSchema, string[]>;
 }>;
+
+export type ApiGenerateQuizPayload = {
+  questions_count: number;
+};
+
+export type ApiGenerateQuizResponse = {
+  data: ApiQuizType[];
+};
+
+export type ApiGenerateQuizErrorResponse = AxiosError<{
+  message: string;
+  errors: Record<string, string[]>;
+}>;

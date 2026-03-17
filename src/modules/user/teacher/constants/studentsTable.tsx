@@ -1,5 +1,5 @@
 import { createColumnHelper } from "@tanstack/react-table";
-import { HStack, Text} from "@chakra-ui/react";
+import { HStack, Text } from "@chakra-ui/react";
 
 export type StudentTableRow = {
   id: number;
@@ -27,7 +27,6 @@ export type StudentTableRow = {
 
 const columnHelper = createColumnHelper<StudentTableRow>();
 
-
 export const StudentsColumn = [
   columnHelper.accessor("name", {
     header: "Name",
@@ -36,8 +35,13 @@ export const StudentsColumn = [
       const student = row.original;
 
       return (
-        <HStack>
-          <Text fontSize="14px" fontFamily="Lato">
+        <HStack overflow="hidden">
+          <Text
+            fontSize="14px"
+            fontFamily="Lato"
+            isTruncated
+            maxW="100%"
+          >
             {student.first_name} {student.last_name}
           </Text>
         </HStack>
@@ -45,26 +49,30 @@ export const StudentsColumn = [
     },
   }),
 
-columnHelper.accessor("phone", {
-  header: "Phone",
-  cell: ({ getValue }) => {
-    const phone = getValue();
+  columnHelper.accessor("phone", {
+    header: "Phone",
+    cell: ({ getValue }) => {
+      const phone = getValue();
 
-    return (
-      <Text fontSize="14px" fontFamily="Lato" color={phone ? "#1A202C" : "#000000ff"}>
-        {phone ?? "—"}
-      </Text>
-    );
-  },
-}),
+      return (
+        <Text
+          fontSize="14px"
+          fontFamily="Lato"
+          isTruncated
+          color={phone ? "#1A202C" : "#000000ff"}
+        >
+          {phone ?? "—"}
+        </Text>
+      );
+    },
+  }),
 
   columnHelper.accessor("email", {
     header: "Email",
     cell: (info) => (
-      <Text ml="0px" fontSize="14px" fontFamily="Lato">
+      <Text ml="0px" fontSize="14px" fontFamily="Lato" isTruncated>
         {info.getValue()}
       </Text>
     ),
   }),
-
 ];

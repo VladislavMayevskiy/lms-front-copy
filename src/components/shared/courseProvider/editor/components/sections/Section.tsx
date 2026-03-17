@@ -14,6 +14,7 @@ import { SectionTypesByName } from "constants/section";
 import { useEditSection, useDeleteSection } from "api/courseProvider/sections/hooks";
 import { useArrayFiles } from "hooks/useFile";
 import { isTextForm } from "./utils";
+import { useTranslationsModal } from "components/shared/courseProvider/translations/useTranslationsModal";
 
 type Props = {
   section: SectionType;
@@ -25,6 +26,7 @@ export const Section = ({ section }: Props) => {
 
   const { mutate: editSection } = useEditSection();
   const { mutate: deleteSection } = useDeleteSection();
+  const openTranslationsModal = useTranslationsModal((store) => store.openModal);
 
   const methods = useForm<SectionSchema>({
     defaultValues: {
@@ -95,6 +97,15 @@ export const Section = ({ section }: Props) => {
             </div>
           }
           items={[
+            {
+              label: "Edit translations",
+              onClick: () =>
+                openTranslationsModal(
+                  "section",
+                  section.id,
+                  section.title || `Section #${section.position}`,
+                ),
+            },
             {
               label: "Delete Section",
               onClick: () => deleteSection(section.id),

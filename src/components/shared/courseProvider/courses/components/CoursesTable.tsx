@@ -11,12 +11,14 @@ import {
 import { TableLoading } from "components/ui/tableLoading";
 import Edit from "assets/imgs/admin/edit.svg?react"
 import Delete from "assets/imgs/admin/trash.svg?react"
+import TranslateIcon from "assets/imgs/admin/translate.svg?react"
 // import DirectionsIcon from "assets/imgs/admin/sorting.svg?react";
 import classNames from "classnames";
 import { columns } from "../constants/coursesTable";
 import type { CourseListType } from "types/models/Course";
 import { useCourseStore } from "../hooks/useCourse";
 import { useModal, CourseProviderModalConsts } from "hooks/courseProvider/useModal";
+import { useTranslationsModal } from "components/shared/courseProvider/translations/useTranslationsModal";
 
 type Props = {
   courses: CourseListType[];
@@ -26,6 +28,7 @@ type Props = {
 export const CoursesTable = ({ courses, isLoading }: Props) => {
   const openModal = useModal((store) => store.openModal);
   const setCourse = useCourseStore((store) => store.setCourse);
+  const openTranslationsModal = useTranslationsModal((store) => store.openModal);
   const { getHeaderGroups, getRowModel } = useReactTable({
     columns,
     data: courses,
@@ -33,7 +36,7 @@ export const CoursesTable = ({ courses, isLoading }: Props) => {
   });
 
   return (
-    <table>
+    <table className="w-full table-fixed">
       <thead>
         {getHeaderGroups().map((headerGroup) => (
           <tr key={headerGroup.id}>
@@ -50,7 +53,7 @@ export const CoursesTable = ({ courses, isLoading }: Props) => {
                 <div
                   className={
                     classNames(
-                      "flex items-center gap-1.5 font-normal text-base px-5 py-4 bg-light-blue text-left",
+                      "flex items-center gap-1.5 font-normal text-base px-5 py-4 bg-light-blue text-left whitespace-nowrap overflow-hidden",
                       {
                         "rounded-l-[8px]": index === 0,
                       }
@@ -67,7 +70,7 @@ export const CoursesTable = ({ courses, isLoading }: Props) => {
             ))}
             <th
               key="courses-table-actions"
-              className="py-1 w-full"
+              className="py-1 w-[13%]"
             >
               <div className="font-normal text-left text-base px-5 py-4 bg-light-blue rounded-r-[8px]">
                 Actions
@@ -96,6 +99,7 @@ export const CoursesTable = ({ courses, isLoading }: Props) => {
                     "flex items-center",
                     {
                       "border-l! rounded-l-[8px]!": index === 0,
+                      "min-w-0 overflow-hidden": index === 0,
                     }
                   )}
                 >
@@ -149,6 +153,24 @@ export const CoursesTable = ({ courses, isLoading }: Props) => {
                   >
                     <Box>
                       <Delete width={"20px"} height={"20px"}/>
+                    </Box>
+                  </Button>
+
+                  <Button
+                    w="40px"
+                    h="40px"
+                    borderRadius="6px"
+                    borderWidth="1px"
+                    bg="white"
+                    _hover={{ bgColor: "white" }}
+                    borderColor={"#B4D6DF"}
+                    title="Edit translations"
+                    onClick={() =>
+                      openTranslationsModal("course", row.original.id, row.original.name)
+                    }
+                  >
+                    <Box>
+                      <TranslateIcon width={"20px"} height={"20px"}/>
                     </Box>
                   </Button>
                 </HStack>

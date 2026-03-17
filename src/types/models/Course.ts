@@ -21,6 +21,7 @@ export type CourseListType = {
   schoolId: Nullable<number>;
   schoolsCount: Nullable<number>;
   image: string;
+  languages?: string[];
 };
 
 export type CourseType = {
@@ -40,6 +41,7 @@ export type CourseType = {
   schoolId: Nullable<number>;
   schools: CourseSchoolType[];
   image: string;
+  languages?: string[];
 };
 
 export type CourseProgressStatusType =

@@ -159,7 +159,7 @@ export default function UserLayout({ children }: PropsWithChildren<Props>) {
           transition="width 0.3s ease"
         >
 
-        <HStack align="center" height="100%" px="8px">
+        <HStack align="center" height="100%" px="8px" >
           <Logo />
           {/* <HStack spacing={isOpen ? 2 : 0}>
            <LogoIcon />
@@ -235,7 +235,25 @@ export default function UserLayout({ children }: PropsWithChildren<Props>) {
               spacing={isOpen ? 3 : 0}
               borderRadius="10px"
             >
-              <Image width="32px" height="32px" bg="#E9ECEF" borderRadius="5px" />
+              {User?.image ? (
+                <Image
+                  width="32px"
+                  height="32px"
+                  bg="#E9ECEF"
+                  borderRadius="5px"
+                  src={User.image}
+                  objectFit="cover"
+                  alt="Profile"
+                  onError={(e) => {
+                    if (import.meta.env.DEV) {
+                      console.debug('[UserLayout] Sidebar avatar failed to load:', (e.target as HTMLImageElement).src);
+                    }
+                    (e.target as HTMLImageElement).style.display = 'none';
+                  }}
+                />
+              ) : (
+                <Image width="32px" height="32px" bg="#E9ECEF" borderRadius="5px" />
+              )}
               {isOpen && (
                 <Text>
                   {User?.first_name} {User?.last_name}

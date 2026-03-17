@@ -11,28 +11,30 @@ export const columns = [
   columnHelper.accessor("name", {
     header: "Course Name",
     meta: {
-      className: "w-[60%]",
+      className: "w-[45%]",
     },
     cell: (info) => (
       <Link
         to={`${CourseProviderRoutes.modules.replace(":id", String(info.row.original.id))}`}
-        className="w-full"
+        className="w-full min-w-0 block overflow-hidden"
       >
-        {info.getValue()}
+        <span className="truncate whitespace-nowrap overflow-hidden block">
+          {info.getValue()}
+        </span>
       </Link>
     ),
   }),
   columnHelper.accessor("type", {
     header: "Course Type",
     meta: {
-      className: "w-[11%]",
+      className: "w-[12%]",
     },
     cell: (info) => info.getValue(),
   }),
   columnHelper.accessor("schoolsCount", {
     header: "Assigned Schools",
     meta: {
-      className: "w-[10%]",
+      className: "w-[12%]",
     },
     cell: (info) => (
       <Schools
@@ -44,7 +46,7 @@ export const columns = [
   columnHelper.accessor("status", {
     header: "Status",
     meta: {
-      className: "w-[20%]",
+      className: "w-[18%]",
     },
     cell: (info) => (
       <CourseStatus

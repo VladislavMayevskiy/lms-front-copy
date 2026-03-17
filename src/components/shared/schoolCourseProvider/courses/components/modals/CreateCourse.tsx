@@ -5,6 +5,7 @@ import Modal from "components/ui/modal";
 import { Dropzone } from "components/ui/fields/Dropzone";
 import { TextField } from "components/ui/fields/TextField";
 import { TextAreatField } from "components/ui/fields/TextAreaField";
+import { SelectMultipleField } from "components/ui/fields/SelectMultipleField";
 import { MainButton } from "components/ui/button";
 import { courseSchemaResolver } from "../../validation/course.schema";
 import type { CourseSchema } from "../../validation/course.schema";
@@ -14,10 +15,18 @@ import { useCourseStore } from "../../hooks/useCourse";
 import { CourseStatusIds, CourseTypeIds } from "constants/course";
 import { SchoolCourseProviderRoutes } from "constants/routes";
 import { useFile } from "hooks/useFile";
+import { useGetLanguages } from "api/admin/languages/hooks";
 
 export const CreateCourseModal = () => {
   const navigate = useNavigate();
   const { course, setCourse } = useCourseStore();
+  const { data: languagesData } = useGetLanguages();
+  // Real API shape: { value: string; label: string; is_rtl: boolean }
+  // Map to the {id, name} shape that SelectMultipleField expects.
+  const languageOptions = (languagesData?.data ?? []).map((lang) => ({
+    id: lang.value,   // e.g. "en", "ko" — always a string, never undefined
+    name: lang.label, // e.g. "English", "Korean"
+  }));
   const { mutate: createCourse, isPending } = useCreateCourse();
   const { mutate: editCourse, isPending: isEditPending } = useEditCourse();
   const { control, handleSubmit, setError, setValue } = useForm<CourseSchema>({
@@ -28,9 +37,10 @@ export const CreateCourseModal = () => {
       about: course?.about || "",
       achievements: course?.achievements || "",
       position: course?.position || null,
-      duration: course?.duration.toString() || "",
+      duration: (course?.duration || 0).toString(),
       status: CourseStatusIds[course?.status || "Draft"],
       type: CourseTypeIds[course?.type || "Mixed"],
+      languages: course?.languages || [],
       image: null,
     },
     resolver: courseSchemaResolver,
@@ -40,7 +50,8 @@ export const CreateCourseModal = () => {
   useFile({
     fileName,
     fileUrl: course?.image,
-    setFile: (file) => setValue('image', file!),
+    // file may be null if the URL fails to load (e.g. CORS on Azure Blob URLs in local dev)
+    setFile: (file) => setValue('image', file),
   });
   const isOpen = useModal((store) => store.modals[CourseProviderModalConsts.CreateCourse].isOpen);
   const closeModal = useModal((store) => store.closeModal);
@@ -53,6 +64,10 @@ export const CreateCourseModal = () => {
 
       if (data[formKey] && formKey === 'image') {
         formData.append(`${formKey}`, data[formKey]);
+      } else if (formKey === 'languages') {
+        (data[formKey] as string[]).forEach((code, index) => {
+          formData.append(`${formKey}[${index}]`, code);
+        });
       } else if (data[formKey]) {
         formData.append(`${formKey}`, data[formKey].toString());
       }
@@ -157,6 +172,20 @@ export const CreateCourseModal = () => {
               fieldContainerClassName="h-24"
               error={error?.message}
               {...field}
+            />
+          )}
+        />
+        <Controller
+          control={control}
+          name="languages"
+          render={({ field: { value, onChange }, fieldState: { error } }) => (
+            <SelectMultipleField
+              label="Languages for translation"
+              placeholder="Select translation languages"
+              value={value}
+              onChange={(ids) => onChange(ids)}
+              data={languageOptions}
+              error={error?.message}
             />
           )}
         />

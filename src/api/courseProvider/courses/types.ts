@@ -21,6 +21,7 @@ export type ApiCourseListType = {
   school_id: Nullable<number>;
   schools_count: Nullable<number>;
   image: string;
+  languages?: string[];
 };
 
 export type ApiCourseType = {
@@ -40,6 +41,7 @@ export type ApiCourseType = {
   school_id: Nullable<number>;
   schools: CourseSchoolType[];
   image: string;
+  languages?: string[];
 };
 
 export type ApiCourseTypeResponse = {

@@ -99,7 +99,7 @@ function LogIn() {
                     width="full"
                     height={58}
                     fontFamily={"text"}
-                    placeholder="Enter email address"
+                    placeholder="Enter password"
                     _placeholder={{ color: "#479AB1" }}
                     {...field}
                   />

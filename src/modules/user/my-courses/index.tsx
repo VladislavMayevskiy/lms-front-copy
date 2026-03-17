@@ -58,7 +58,6 @@ export default function MyCourses() {
             {t("user.myCourses.title")}
           </Heading>
 
-          {/* Filter bar */}
           <Box mb={6} w="100%" className="flex md:flex-row flex-col justify-between md:items-center gap-4">
             <HStack className="w-full overflow-x-scroll gap-4">
               <Box>

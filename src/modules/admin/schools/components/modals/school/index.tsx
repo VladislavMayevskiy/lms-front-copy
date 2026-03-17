@@ -583,6 +583,7 @@ export default function SchoolModal() {
                       isChecked={Boolean(field.value)}
                       onChange={(e) => field.onChange(e.target.checked)}
                       icon={<Check />}
+                      aria-label="Allow subscription for this school"
                       sx={{
                         ".chakra-checkbox__control": {
                           borderRadius: "5px",
@@ -591,6 +592,17 @@ export default function SchoolModal() {
                           height: "20px",
                           borderWidth: "1px",
                           bg: "white",
+                        },
+                        ".chakra-checkbox__control[data-checked]": {
+                          bg: "#0070C1",
+                          borderColor: "#0070C1",
+                        },
+                        ".chakra-checkbox__control[data-checked] svg": {
+                          color: "white",
+                          display: "block",
+                        },
+                        ".chakra-checkbox__control[data-focus-visible]": {
+                          boxShadow: "0 0 0 3px rgba(0, 112, 193, 0.4)",
                         },
                       }}
                     />

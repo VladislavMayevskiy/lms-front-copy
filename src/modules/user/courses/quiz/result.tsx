@@ -2,8 +2,7 @@ import { Box, Heading, Text, Button, VStack, HStack } from "@chakra-ui/react";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { Spinner } from "components/ui/spinner";
-import { useShowCourse } from "api/user/courses/hooks";
-import { useGetQuizResult } from "api/user/courses/hooks";
+import { useShowCourse, useGetQuizResult } from "api/user/courses/hooks";
 
 type Props = {
   unitId: number;
@@ -13,6 +12,7 @@ type Props = {
   title?: string;
 
   onBack?: () => void;
+  onContinue?: () => void;
 };
 
 export default function UnitQuizResultContent({
@@ -21,23 +21,35 @@ export default function UnitQuizResultContent({
   showCourseTitle = true,
   title = "Unit Quiz",
   onBack,
+  onContinue,
 }: Props) {
   const { t } = useTranslation();
 
   const { data: course, isLoading: isCourseLoading } = useShowCourse(courseId);
   const { data: result, isLoading: isResultLoading } = useGetQuizResult(unitId);
 
-  const questions = useMemo(() => {
-    return Array.isArray((result as any)?.data) ? (result as any).data : [];
+  const resultData = useMemo(() => {
+    const d = (result as any)?.data;
+    return d?.id ? d : null;
   }, [result]);
 
-  const hasQuiz = questions.length > 0;
+  const questions = useMemo(() => {
+    if (!Array.isArray(resultData?.answers)) return [];
+    return resultData.answers.map((a: any) => ({
+      id: a.question_id,
+      content: a.question_content,
+      is_multiple: a.is_multiple,
+      options: a.options ?? [],
+      is_correct: a.is_correct,
+    }));
+  }, [resultData]);
 
   if (isCourseLoading || isResultLoading) {
     return <Spinner isLoading={isCourseLoading || isResultLoading} />;
   }
 
-  if (!hasQuiz) {
+  /* ── No result (unit has no quiz or quiz was never submitted) ── */
+  if (!resultData) {
     return (
       <Box>
         {showCourseTitle && (
@@ -65,15 +77,54 @@ export default function UnitQuizResultContent({
 
   return (
     <Box className="lms-box">
+      <Box
+        p={4}
+        bg="rgba(0, 112, 193, 0.07)"
+        border="1px solid #B4D6DF"
+        borderRadius="12px"
+        mb={6}
+      >
+        <Text fontFamily="Lato" fontWeight="bold" fontSize="20px" color="#0070C1">
+          {t("user.courses.learn.totalScore", "Total score")}: {resultData.score}/100
+        </Text>
+        <Text fontFamily="Lato" color="#434645" fontSize="14px" mt={1}>
+          {resultData.correct_answers}/{resultData.total_questions}{" "}
+          {t("user.courses.learn.correctAnswers", "correct")}
+        </Text>
+      </Box>
+
       <VStack spacing={6} align="stretch">
         {questions.map((q: any, idx: number) => (
           <Box key={q.id} p={5} border="1px solid #B4D6DF" borderRadius="20px">
-            <Text fontFamily="Lato" mb={4} fontSize="16px">
-              {idx + 1}. {q.content}
-            </Text>
+            <HStack mb={4} justify="space-between" align="flex-start">
+              <Text fontFamily="Lato" fontSize="16px" flex="1">
+                {idx + 1}. {q.content}
+              </Text>
+              {q.is_correct ? (
+                <Text
+                  fontFamily="Lato"
+                  fontSize="13px"
+                  color="#2F7A33"
+                  fontWeight="semibold"
+                  flexShrink={0}
+                >
+                  ✓ {t("general.correct", "Correct")}
+                </Text>
+              ) : (
+                <Text
+                  fontFamily="Lato"
+                  fontSize="13px"
+                  color="#B42318"
+                  fontWeight="semibold"
+                  flexShrink={0}
+                >
+                  ✗ {t("general.wrong", "Wrong")}
+                </Text>
+              )}
+            </HStack>
 
             <VStack align="stretch" spacing={3}>
-              {(q.options ?? []).map((opt: any) => {
+              {q.options.map((opt: any) => {
                 const isSelected = !!opt.is_selected;
                 const isCorrect = !!opt.is_correct;
 
@@ -155,6 +206,28 @@ export default function UnitQuizResultContent({
           </Box>
         ))}
       </VStack>
+
+      {(onBack || onContinue) && (
+        <HStack mt={6} gap={3} justify="flex-end">
+          {onBack && (
+            <Button variant="outline" borderColor="#B4D6DF" onClick={onBack}>
+              {t("user.courses.learn.backToUnit")}
+            </Button>
+          )}
+          {onContinue && (
+            <Button
+              bg="#0070C1"
+              color="white"
+              borderRadius="10px"
+              fontWeight="bold"
+              _hover={{ bg: "#005A9E" }}
+              onClick={onContinue}
+            >
+              {t("user.courses.learn.nextUnit", "Continue")}
+            </Button>
+          )}
+        </HStack>
+      )}
     </Box>
   );
 }

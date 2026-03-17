@@ -13,7 +13,7 @@ import { TableLoading } from "components/ui/tableLoading";
 import { Link } from "react-router-dom";
 import Edit from "assets/imgs/admin/edit.svg?react"
 import Delete from "assets/imgs/admin/trash.svg?react"
-// import DirectionsIcon from "assets/imgs/admin/sorting.svg?react";
+import TranslateIcon from "assets/imgs/admin/translate.svg?react"
 import classNames from "classnames";
 import { columns } from "../constants/modulesTable";
 import { CourseProviderRoutes, SchoolCourseProviderRoutes } from "constants/routes";
@@ -21,6 +21,7 @@ import type { ModuleType } from "types/models/Module";
 import { useModuleStore } from "../hooks/useModule";
 import { useModal, CourseProviderModalConsts } from "hooks/courseProvider/useModal";
 import { authStore } from "stores/authStore";
+import { useTranslationsModal } from "components/shared/courseProvider/translations/useTranslationsModal";
 
 type Props = {
   modules: ModuleType[];
@@ -36,6 +37,7 @@ export const ModulesTable = ({ modules, courseId, isLoading }: Props) => {
 
   const openModal = useModal((store) => store.openModal);
   const setModule = useModuleStore((store) => store.setModule);
+  const openTranslationsModal = useTranslationsModal((store) => store.openModal);
   const { getHeaderGroups, getRowModel } = useReactTable({
     columns,
     data: modules,
@@ -43,7 +45,7 @@ export const ModulesTable = ({ modules, courseId, isLoading }: Props) => {
   });
 
   return (
-    <table>
+    <table className="w-full table-fixed">
       <thead>
         {getHeaderGroups().map((headerGroup) => (
           <tr key={headerGroup.id}>
@@ -60,7 +62,7 @@ export const ModulesTable = ({ modules, courseId, isLoading }: Props) => {
                 <div
                   className={
                     classNames(
-                      "flex items-center gap-1.5 font-normal text-base px-5 py-4 bg-light-blue text-left",
+                      "flex items-center gap-1.5 font-normal text-base px-5 py-4 bg-light-blue text-left whitespace-nowrap overflow-hidden",
                       {
                         "rounded-l-[8px]": index === 0,
                       }
@@ -77,7 +79,7 @@ export const ModulesTable = ({ modules, courseId, isLoading }: Props) => {
             ))}
             <th
               key="courses-table-actions"
-              className="py-1 w-full"
+              className="py-1 w-[20%]"
             >
               <div className="font-normal text-left text-base px-5 py-4 bg-light-blue rounded-r-[8px]">
                 Actions
@@ -96,17 +98,18 @@ export const ModulesTable = ({ modules, courseId, isLoading }: Props) => {
             {row.getVisibleCells().map((cell, index) => (
               <td
                 key={cell.id}
-                className="py-1"
+                className="py-1 overflow-hidden"
               >
                 <Link
                   to={`${baseRoute.units.replace(":id", String(courseId)).replace(":moduleId", String(row.original.id))}`}
+                  className="block min-w-0 overflow-hidden"
                 >
                   <div
                     className={
                     classNames(
                       "min-h-[68px] font-normal text-base px-5 py-4 border-light-blue! border-t! border-b!",
                       "group-hover:bg-grey group-hover:border-primary! transition-colors duration-300",
-                      "flex items-center",
+                      "flex items-center min-w-0 overflow-hidden",
                       {
                         "border-l! rounded-l-[8px]!": index === 0,
                       }
@@ -163,6 +166,24 @@ export const ModulesTable = ({ modules, courseId, isLoading }: Props) => {
                   >
                     <Box>
                       <Delete width={"20px"} height={"20px"}/>
+                    </Box>
+                  </Button>
+
+                  <Button
+                    w="40px"
+                    h="40px"
+                    borderRadius="6px"
+                    borderWidth="1px"
+                    bg="white"
+                    _hover={{ bgColor: "white" }}
+                    borderColor={"#B4D6DF"}
+                    title="Edit translations"
+                    onClick={() =>
+                      openTranslationsModal("module", row.original.id, row.original.name)
+                    }
+                  >
+                    <Box>
+                      <TranslateIcon width={"20px"} height={"20px"}/>
                     </Box>
                   </Button>
                 </HStack>

@@ -4,6 +4,7 @@ import { SidePanel } from "./SidePanel";
 import { Sections } from "./sections";
 import { QuizModal } from "./modals/quiz";
 import { ConfirmQuizDeleteModal } from "./modals/ConfirmQuizDelete";
+import { TranslationsModal } from "components/shared/courseProvider/translations/TranslationsModal";
 
 type Props = {
   unitId: number;
@@ -31,6 +32,7 @@ export const Editor = ({ unitId }: Props) => {
       <ConfirmQuizDeleteModal
         unitId={unitId}
       />
+      <TranslationsModal />
     </div>
   );
 };

@@ -1,8 +1,5 @@
-import {
-  HStack,
-  Text
-} from "@chakra-ui/react";
-import LogoIcon from "assets/imgs/user/mobile/logo.svg?react"
+
+import LogoIcon from "assets/imgs/logo.png";
 import GazaLogo from "assets/imgs/gaza.jpeg";
 import { authStore } from "stores/authStore";
 
@@ -14,9 +11,16 @@ export default function Logo() {
       <img src={GazaLogo} alt="Gaza Logo" className="w-full h-full object-cover" />
     </div>
   ): (
-    <HStack>
-      <LogoIcon />
-      <Text color="#0070C1" fontWeight="800" fontSize={'20px'}>COURSA</Text>
-    </HStack>
+  <div className="overflow-hidden">
+    <img
+      src={LogoIcon}
+      alt="Gaza Logo"
+      className="
+        w-[150px] h-[150px]
+        md:w-[220px] md:h-[220px]
+        object-contain
+      "
+    />
+  </div>
   );
 };

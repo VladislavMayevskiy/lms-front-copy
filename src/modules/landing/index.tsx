@@ -15,9 +15,7 @@ function Landing () {
       minH="100vh"
       position="relative"
       sx={{
-        // Prevent horizontal scroll
         overflowX: "clip",
-        // Ensure box-sizing
         "*, *::before, *::after": {
           boxSizing: "border-box"
         }

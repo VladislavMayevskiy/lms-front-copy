@@ -6,11 +6,14 @@ import SchoolAdminProtectedRoute from "./SchoolAdminProtectedRoute";
 import CourseProviderProtectedRoute from "./CourseProviderProtectedRoute";
 import SchoolCourseProviderProtectedRoute from "./SchoolCourseProviderProtectedRoute";
 import UserProtectedRoute from "./UserProtectedRoute";
+import TeacherProtectedRoute from "./TeacherProtectedRoute";
 
 import LandingPage from "app/page";
 import LoginPage from "app/auth/login/page";
 import CreateAccountPage from "app/auth/create-account/page";
 import ForgotPasswordPage from "app/auth/forgot-password/page";
+import PrivacyPolicyPage from "app/privacy-policy/page";
+import TermsAndConditionsPage from "app/terms-and-conditions/page";
 
 import AdminDistricsPage from "app/admin/districs/page";
 import AdminSchoolsPage from "app/admin/schools/page";
@@ -237,6 +240,8 @@ export const AppRoutes = () => {
 					path="/learn/:id/:unitId"
 					element={<LearnCoursePage/>}
 				/>
+			{/* Teacher-only routes — students are redirected to /courses */}
+			<Route element={<TeacherProtectedRoute />}>
 				<Route
 					key="user-routes-teacher"
 					path={UserRoutes.teacher}
@@ -253,8 +258,19 @@ export const AppRoutes = () => {
 					element={<StudentsQuizPage/>}
 				/>
 			</Route>
+			</Route>
 			{/* End User Routes */}
 
+			<Route
+				key="public-privacy-policy"
+				path={AuthRoutes.privacyPolicy}
+				element={<PrivacyPolicyPage />}
+			/>
+			<Route
+				key="public-terms-and-conditions"
+				path={AuthRoutes.termsAndConditions}
+				element={<TermsAndConditionsPage />}
+			/>
 		</Routes>
 	);
 };

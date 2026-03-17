@@ -30,7 +30,7 @@ export default function SectionRenderer({ section }: { section: UiUnitSection })
       return (
         <SectionShell>
           {section.title ? (
-            <Heading fontSize="18px" fontFamily="Lato" mb={2}>
+            <Heading fontSize="18px" fontFamily="Lato" mb={2} noOfLines={2}>
               {section.title}
             </Heading>
           ) : null}
@@ -115,9 +115,18 @@ export default function SectionRenderer({ section }: { section: UiUnitSection })
             <Text fontFamily="Lato" fontWeight="bold" mb={1}>
               {t("user.courses.render.noteForTeacher")}
             </Text>
-            <Text fontFamily="Lato" fontSize="14px" color="#434645">
-              {section.content ?? ""}
-            </Text>
+            <Box
+              fontFamily="Lato"
+              fontSize="14px"
+              color="#434645"
+              dangerouslySetInnerHTML={{ __html: section.content ?? "" }}
+              className="ql-editor"
+              sx={{
+                p: "0 !important",
+                "& p:first-of-type": { mt: 0 },
+                "& p:last-child": { mb: 0 },
+              }}
+            />
           </Box>
         </SectionShell>
       );

@@ -12,7 +12,6 @@ export default function Section1_5() {
       zIndex={1} 
       px={{ base: "20px", md: 0 }}
       sx={{
-        // Hide scrollbar but allow scrolling on mobile
         "&::-webkit-scrollbar": {
           display: "none"
         },
@@ -26,7 +25,6 @@ export default function Section1_5() {
         overflowX={{ base: "auto", md: "visible" }} 
         pb={{ base: "10px", md: 0 }}
         sx={{
-          // Smooth horizontal scroll on mobile
           WebkitOverflowScrolling: "touch"
         }}
       >

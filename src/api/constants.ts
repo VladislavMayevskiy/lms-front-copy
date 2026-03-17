@@ -34,6 +34,10 @@ export const AdminApiRoutes = {
   invoice: (schoolId: number) => `${ApiBaseAdmin}/schools/${schoolId}/invoices`
 };
 
+export const AdminLanguagesApiRoutes = {
+  languages: `${ApiBaseAdmin}/languages`,
+};
+
 export const CourseProviderApiRoutes = {
   courses: `${ApiBaseAdmin}/courses`,
   courseModules: (courseId: number) => `${ApiBaseAdmin}/courses/${courseId}/modules`,
@@ -43,6 +47,16 @@ export const CourseProviderApiRoutes = {
   moduleUnits: (moduleId: number) => `${ApiBaseAdmin}/modules/${moduleId}/units`,
   units: `${ApiBaseAdmin}/units`,
   quiz: (unitId: number) => `${ApiBaseAdmin}/units/${unitId}/quiz`,
+  generateQuiz: (unitId: number) => `${ApiBaseAdmin}/units/${unitId}/generate-quiz`,
+  // Translations
+  courseTranslations: (courseId: number) => `${ApiBaseAdmin}/courses/${courseId}/translations`,
+  courseTranslation: (courseId: number, language: string) => `${ApiBaseAdmin}/courses/${courseId}/translations/${language}`,
+  moduleTranslations: (moduleId: number) => `${ApiBaseAdmin}/modules/${moduleId}/translations`,
+  moduleTranslation: (moduleId: number, language: string) => `${ApiBaseAdmin}/modules/${moduleId}/translations/${language}`,
+  sectionTranslations: (sectionId: number) => `${ApiBaseAdmin}/sections/${sectionId}/translations`,
+  sectionTranslation: (sectionId: number, language: string) => `${ApiBaseAdmin}/sections/${sectionId}/translations/${language}`,
+  unitTranslations: (unitId: number) => `${ApiBaseAdmin}/units/${unitId}/translations`,
+  unitTranslation: (unitId: number, language: string) => `${ApiBaseAdmin}/units/${unitId}/translations/${language}`,
 };
 
 export const UserApiRoutes = {
@@ -67,7 +81,10 @@ export const UserApiRoutes = {
   finishUnit: (unitId: number) => `${ApiBase}/units/${unitId}/complete`,
   purchaseCourse: (courseId: number) => `${ApiBase}/courses/${courseId}/purchase`,
   quiz_result: (unitId: number) => `${ApiBase}/units/${unitId}/quiz-result`,
-  students: `${ApiBase}/students`,
-  studentCourse: (userId: number) =>  `${ApiBase}/students/${userId}/courses`,
-  studentQuiz: (userId: number, courseId: number) => `${ApiBase}/students/${userId}/courses/${courseId}/quiz-results`
+  quizAnalyticsCourse: (courseId: number) => `${ApiBase}/teacher/courses/${courseId}/quiz-analytics`,
+  quizAnalyticsUnit: (unitId: number) => `${ApiBase}/teacher/units/${unitId}/quiz-analytics`,
+  teacherStudents: `${ApiBase}/teacher/students`,
+  teacherStudentCourses: (userId: number) => `${ApiBase}/teacher/students/${userId}/courses`,
+  teacherStudentCourseQuizResults: (userId: number, courseId: number) =>
+    `${ApiBase}/teacher/students/${userId}/courses/${courseId}/quiz-results`,
 };

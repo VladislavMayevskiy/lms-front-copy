@@ -12,6 +12,7 @@ import {
 } from "components/ui/layouts/courseProvider";
 import { UnitsList } from "components/shared/courseProvider/units/components/UnitsList";
 import { CreateUnitModal, DeleteUnit } from "components/shared/courseProvider/units/components/modals";
+import { TranslationsModal } from "components/shared/courseProvider/translations/TranslationsModal";
 import PlusIcon from "assets/imgs/plus.svg?react";
 import { SchoolCourseProviderRoutes } from "constants/routes";
 import { useModal, CourseProviderModalConsts } from "hooks/courseProvider/useModal";
@@ -80,6 +81,7 @@ function CourseProviderUnits({ courseId, moduleId }: { courseId: number; moduleI
         baseRoute={SchoolCourseProviderRoutes.sections.replace(":id", courseId.toString()).replace(":moduleId", moduleId.toString())}
       />
       <DeleteUnit />
+      <TranslationsModal />
     </CourseProviderLayout>
   );
 };

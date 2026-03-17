@@ -21,7 +21,7 @@ import MenImage from "assets/imgs/men.png";
 
 import { useForm, Controller } from "react-hook-form";
 import { useCurrentUserQuery, useUpdateCurrentUser } from "api/global/hooks";
-import { useEffect, useCallback } from "react";
+import { useEffect, useCallback, useState } from "react";
 import { localStore } from "stores/localStore";
 import { ToastComponent } from "components/ui/toast";
 import { queryClient } from "api";
@@ -44,6 +44,9 @@ function Profile() {
   const { t } = useTranslation();
 
   const { data } = useCurrentUserQuery();
+  
+  const [imgCacheBust, setImgCacheBust] = useState(1);
+  const handleImageUpdated = useCallback(() => setImgCacheBust((v) => v + 1), []);
   const { mutate: updateUser, isPending: isSavingProfile } = useUpdateCurrentUser();
   const { mutate: changePassword, isPending: isChangingPassword } = useUpdatePasswordUser();
   const { data: activity } = useGetActivity();
@@ -148,7 +151,7 @@ const onChangePassword = handleSubmit(async (values) => {
   return (
     <UserLayout>
       <Box className="flex md:flex-row flex-col gap-4 md:items-start">
-        <ProfileModal isOpen={type === "UPDATE_IMAGE_USER"} onClose={closeModal} />
+        <ProfileModal isOpen={type === "UPDATE_IMAGE_USER"} onClose={closeModal} onUpdated={handleImageUpdated} />
         <DestroyModalUser />
         <DeleteModalUserImage />
 
@@ -187,9 +190,19 @@ const onChangePassword = handleSubmit(async (values) => {
                 <Image
                   width="100px"
                   height="100px"
-                  alt="Image"
+                  alt="Avatar"
                   borderRadius="99px"
-                  src={data?.image || MenImage}
+                  fallbackSrc={MenImage}
+                  src={
+                    data?.image
+                      ? (data.image.includes("?")
+                          ? `${data.image}&_v=${imgCacheBust}`
+                          : `${data.image}?_v=${imgCacheBust}`)
+                      : MenImage
+                  }
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = MenImage;
+                  }}
                 />
 
                 <Box className="flex md:flex-row flex-col gap-3.5 w-full">

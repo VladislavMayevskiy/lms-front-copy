@@ -13,9 +13,10 @@ type ProfileFormValues = {
 type ProfileModalProps = {
   isOpen: boolean;
   onClose: () => void;
+  onUpdated?: () => void;
 };
 
-function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
+function ProfileModal({ isOpen, onClose, onUpdated }: ProfileModalProps) {
   const { t } = useTranslation();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const toast = ToastComponent();
@@ -35,6 +36,7 @@ const onUpdate = handleSubmit(() => {
   updateImage(file, {
     onSuccess: () => {
       toast("Image successfully updated");
+      onUpdated?.();
       onClose();
     },
     onError: () => {

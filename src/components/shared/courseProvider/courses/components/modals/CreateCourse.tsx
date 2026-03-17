@@ -15,13 +15,22 @@ import { useCourseStore } from "../../hooks/useCourse";
 import { CourseStatusIds, CourseTypeIds } from "constants/course";
 import { CourseProviderRoutes } from "constants/routes";
 import { useGetSchools } from "api/admin/schools/hooks";
+import { useGetLanguages } from "api/admin/languages/hooks";
 import { useFile } from "hooks/useFile";
 
 export const CreateCourseModal = () => {
   const navigate = useNavigate();
   const { course, setCourse } = useCourseStore();
   const { data: schools } = useGetSchools();
+  const { data: languagesData } = useGetLanguages();
+  // Real API shape: { value: string; label: string; is_rtl: boolean }
+  // Map to the {id, name} shape that SelectMultipleField expects.
+  const languageOptions = (languagesData?.data ?? []).map((lang) => ({
+    id: lang.value,  // e.g. "en", "ko" — always a string, never undefined
+    name: lang.label, // e.g. "English", "Korean"
+  }));
   const { data: courseData } = useCourseQuery(course?.id || 0);
+  console.log(languagesData);
 
   const { mutate: createCourse, isPending } = useCreateCourse();
   const { mutate: editCourse, isPending: isEditPending } = useEditCourse();
@@ -37,6 +46,7 @@ export const CreateCourseModal = () => {
       status: CourseStatusIds[courseData?.status || "Draft"],
       type: CourseTypeIds[courseData?.type || "Mixed"],
       schools: (courseData?.schools || []).map(({ id }) => id),
+      languages: courseData?.languages || [],
       image: null,
     },
     resolver: courseSchemaResolver,
@@ -49,7 +59,7 @@ export const CreateCourseModal = () => {
   useFile({
     fileName,
     fileUrl: course?.image,
-    setFile: (file) => setValue('image', file!),
+    setFile: (file) => setValue('image', file),
   });
 
   const onSubmit = handleSubmit((data) => {
@@ -60,10 +70,14 @@ export const CreateCourseModal = () => {
 
       if (data[formKey] && formKey === 'image') {
         formData.append(`${formKey}`, data[formKey]);
-      } else if (data[formKey] && formKey === 'schools') {
-        data[formKey].forEach((schoolId, index) => {
+      } else if (formKey === 'schools') {
+        (data[formKey] as number[]).forEach((schoolId, index) => {
           formData.append(`${formKey}[${index}]`, schoolId.toString());
-        })
+        });
+      } else if (formKey === 'languages') {
+        (data[formKey] as string[]).forEach((code, index) => {
+          formData.append(`${formKey}[${index}]`, code);
+        });
       } else if (data[formKey]) {
         formData.append(`${formKey}`, data[formKey].toString());
       }
@@ -191,6 +205,22 @@ export const CreateCourseModal = () => {
             );
           }}
         />
+        <Controller
+          control={control}
+          name="languages"
+          render={({ field: { value, onChange }, fieldState: { error } }) => {
+            return (
+              <SelectMultipleField
+                label="Languages for translation"
+                placeholder="Select translation languages"
+                value={value}
+                onChange={(ids) => onChange(ids)}
+                data={languageOptions}
+                error={error?.message}
+              />
+            );
+          }}
+        />
         <div className="flex w-full gap-6 items-center">
           <Controller
             name="instructor"
@@ -240,7 +270,7 @@ export const CreateCourseModal = () => {
           render={({ field, fieldState: { error } }) => (
             <TextAreatField
               id="create-course-achievements"
-              label="What you’ll achieve"
+              label="What you'll achieve"
               placeholder="Enter text"
               fieldContainerClassName="h-24"
               error={error?.message}

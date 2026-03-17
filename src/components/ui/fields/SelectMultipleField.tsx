@@ -10,16 +10,31 @@ import X from "assets/imgs/admin/modal/Close.svg?react";
 import Chevron from "assets/imgs/admin/modal/chevron.svg?react";
 import Check from "assets/imgs/admin/modal/check.svg?react";
 
-type Props<T> = {
+// Chakra's Checkbox clones the icon element and injects `isChecked` / `isIndeterminate`
+// as React props. SVG components from Vite's SVGR spread all props onto the <svg> DOM
+// element, causing "React does not recognize the `isChecked` prop on a DOM element".
+// Strip those props here before they reach the raw DOM node.
+const CheckboxIcon = ({
+  isChecked: _isChecked,
+  isIndeterminate: _isIndeterminate,
+  ...rest
+}: {
+  isChecked?: boolean;
+  isIndeterminate?: boolean;
+  [key: string]: unknown;
+}) => <Check {...(rest as React.SVGProps<SVGSVGElement>)} />;
+
+// Props are generic over the id type (number for schools, string for language codes, etc.)
+type Props<T extends { id: number | string; name: string }> = {
   label: string;
   placeholder: string;
   error?: string;
-  value?: number[];
-  onChange: (value: number[]) => void;
+  value?: Array<T['id']>;
+  onChange: (value: Array<T['id']>) => void;
   data: T[];
 };
 
-export const SelectMultipleField = <T extends { id: number; name: string; }>({
+export const SelectMultipleField = <T extends { id: number | string; name: string }>({
   label,
   placeholder,
   error,
@@ -28,11 +43,11 @@ export const SelectMultipleField = <T extends { id: number; name: string; }>({
   data,
 }: Props<T>) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const selected: number[] = value || [] as number[];
+  const selected = (value ?? []) as Array<T['id']>;
 
-  const toggleSchool = (id: number) => {
+  const toggleItem = (id: T['id']) => {
     if (selected.includes(id)) {
-      onChange(selected.filter(s => s !== id));
+      onChange(selected.filter((s) => s !== id));
     } else {
       onChange([...selected, id]);
     }
@@ -67,7 +82,7 @@ export const SelectMultipleField = <T extends { id: number; name: string; }>({
             setIsOpen(prev => !prev);
           }}
         >
-          {selected.length === 0 && (
+          {selected.length === 0 ? (
             <Text
               fontFamily="Lato"
               fontSize="14px"
@@ -76,48 +91,46 @@ export const SelectMultipleField = <T extends { id: number; name: string; }>({
             >
               {placeholder}
             </Text>
+          ) : (
+            selected.map(id => {
+              const item = data.find(s => s.id === id);
+              if (!item) return null;
+
+              return (
+                <HStack
+                  key={`selected-${id}`}
+                  px="10px"
+                  py="4px"
+                  borderRadius="10px"
+                  borderWidth="1px"
+                  borderColor="#B4D6DF"
+                  bg="white"
+                  spacing="6px"
+                  width="fit-content"
+                  maxW="max-content"
+                >
+                  <Text
+                    fontFamily="Lato"
+                    fontSize="14px"
+                    color="#434645"
+                    whiteSpace="nowrap"
+                  >
+                    {item.name}
+                  </Text>
+
+                  <Box
+                    cursor="pointer"
+                    onClick={e => {
+                      e.stopPropagation();
+                      toggleItem(item.id);
+                    }}
+                  >
+                    <X />
+                  </Box>
+                </HStack>
+              );
+            })
           )}
-
-          {selected.map(id => {
-            const school = data.find(
-              s => s.id === id
-            );
-            if (!school) return null;
-
-            return (
-              <HStack
-                key={school.id}
-                px="10px"
-                py="4px"
-                borderRadius="10px"
-                borderWidth="1px"
-                borderColor="#B4D6DF"
-                bg="white"
-                spacing="6px"
-                width="fit-content"
-                maxW="max-content"
-              >
-                <Text
-                  fontFamily="Lato"
-                  fontSize="14px"
-                  color="#434645"
-                  whiteSpace="nowrap"
-                >
-                  {school.name}
-                </Text>
-
-                <Box
-                  cursor="pointer"
-                  onClick={e => {
-                    e.stopPropagation();
-                    toggleSchool(school.id);
-                  }}
-                >
-                  <X />
-                </Box>
-              </HStack>
-            );
-          })}
         </Box>
 
         <Box
@@ -158,12 +171,12 @@ export const SelectMultipleField = <T extends { id: number; name: string; }>({
           minH="150px"
         >
           <VStack align="stretch" spacing="4px">
-            {data.map(school => (
-              <HStack key={school.id} spacing="8px">
+            {data.map(item => (
+              <HStack key={`option-${item.id}`} spacing="8px">
                 <Checkbox
-                  isChecked={selected.includes(school.id)}
-                  onChange={() => toggleSchool(school.id)}
-                  icon={<Check />}
+                  isChecked={selected.includes(item.id)}
+                  onChange={() => toggleItem(item.id)}
+                  icon={<CheckboxIcon />}
                   sx={{
                     ".chakra-checkbox__control": {
                       borderRadius: "5px",
@@ -179,7 +192,7 @@ export const SelectMultipleField = <T extends { id: number; name: string; }>({
                   fontSize="16px"
                   color="#434645"
                 >
-                  {school.name}
+                  {item.name}
                 </Text>
               </HStack>
             ))}

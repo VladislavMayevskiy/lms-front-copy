@@ -10,7 +10,11 @@ export const columns = [
     meta: {
       className: "w-[60%]",
     },
-    cell: (info) => info.getValue(),
+    cell: (info) => (
+      <span className="truncate whitespace-nowrap overflow-hidden block">
+        {info.getValue()}
+      </span>
+    ),
   }),
   columnHelper.accessor("status", {
     header: "Status",

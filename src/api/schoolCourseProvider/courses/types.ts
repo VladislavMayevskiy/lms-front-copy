@@ -21,6 +21,7 @@ export type ApiCourseType = {
   school_id: Nullable<number>;
   schools: CourseSchoolType[];
   image: string;
+  languages?: number[];
 };
 
 export type ApiCourseTypeResponse = {

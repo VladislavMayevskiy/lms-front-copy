@@ -1,9 +1,9 @@
 import type { PropsWithChildren } from "react";
 import { useEffect } from "react";
 import {
-  QueryClient,
   QueryClientProvider,
 } from "@tanstack/react-query";
+import { queryClient } from "api";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { ToastContainer } from "react-toastify";
 import { ChakraProvider, extendTheme } from "@chakra-ui/react";
@@ -43,15 +43,6 @@ const lightTheme = extendTheme({
 const darkTheme = extendTheme({
   config: { initialColorMode: "dark", useSystemColorMode: false },
   direction: "ltr",
-});
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      refetchOnWindowFocus: false,
-      retry: 0,
-    },
-  },
 });
 
 const Providers = ({ children }: Props) => {

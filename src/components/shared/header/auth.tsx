@@ -13,6 +13,7 @@ export const AuthHeader = () => {
       borderColor={"#F5F7F9"}
       bgColor={"white"}
       boxShadow={"sm"}
+      maxH={'120px'}
     >
       <Box>
         <Logo />
