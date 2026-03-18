@@ -4,7 +4,8 @@ import { useForm, FormProvider } from "react-hook-form";
 import { toast } from "react-toastify";
 import { ActionMenu } from "components/ui/actionMenu";
 import { MainButton } from "components/ui/button";
-import { Content } from "../content";
+import { ContentComponents } from "../content";
+import { SectionPersistedFilesContext } from "./SectionFilesContext";
 import DragHandleIcon from "assets/imgs/courseProvider/DragH.svg?react";
 import OptionsIcon from "assets/imgs/options.svg?react";
 import { sectionSchemaResolver } from "../../validation/section.schema";
@@ -12,7 +13,6 @@ import type { SectionSchema } from "../../validation/section.schema";
 import type { SectionType } from "types/models/Section";
 import { SectionTypesByName } from "constants/section";
 import { useEditSection, useDeleteSection } from "api/courseProvider/sections/hooks";
-import { useArrayFiles } from "hooks/useFile";
 import { isTextForm } from "./utils";
 import { useTranslationsModal } from "components/shared/courseProvider/translations/useTranslationsModal";
 
@@ -22,12 +22,34 @@ type Props = {
 
 export const Section = ({ section }: Props) => {
   const controls = useDragControls();
-  const isTypeTextForm = useMemo(() => isTextForm(SectionTypesByName[section.type]), [section]);
+  const isTypeTextForm = useMemo(
+    () => isTextForm(SectionTypesByName[section.type]),
+    [section.type]
+  );
 
   const { mutate: editSection } = useEditSection();
   const { mutate: deleteSection } = useDeleteSection();
-  const openTranslationsModal = useTranslationsModal((store) => store.openModal);
+  const openTranslationsModal = useTranslationsModal(
+    (store) => store.openModal
+  );
 
+  /**
+   * Form state for this section.
+   *
+   * `files` starts as [] and only gets populated when the user actively
+   * selects / drops a new file.  We do NOT pre-populate it by fetching the
+   * remote blob URL (which would fail with CORS on blob-storage origins and
+   * blank the section on every mount).
+   *
+   * Existing persisted files are provided to content components via
+   * SectionPersistedFilesContext so they can render directly from the
+   * server-supplied URL — no fetch, no CORS risk.
+   *
+   * On Save: if the user didn't touch the files, `files = []` → nothing is
+   * appended to FormData for the files key → the backend keeps existing files
+   * unchanged.  If the user selected a new file, it is sent and replaces the
+   * previous one.
+   */
   const methods = useForm<SectionSchema>({
     defaultValues: {
       title: section.title || "",
@@ -45,31 +67,41 @@ export const Section = ({ section }: Props) => {
     Object.keys(formValues).forEach((key) => {
       const formKey = key as keyof SectionSchema;
 
-      if (formKey === 'files') {
+      if (formKey === "files") {
+        /**
+         * Only include files in the payload if the user actually selected new
+         * ones in this session.  An empty array means "user didn't change the
+         * file" → omit from FormData so the backend keeps the existing asset.
+         */
         formValues[formKey]?.forEach((file, index) => {
-          formData.append(`files[${index}]`, file);
+          if (file) {
+            formData.append(`files[${index}]`, file);
+          }
         });
       } else if (formValues[formKey] || formValues[formKey] === 0) {
         formData.append(formKey, formValues[formKey].toString());
       }
     });
 
-    editSection({ sectionId: section.id, section: formData }, {
-      onError: (error) => {
-        if (error.status === 422 && error.response?.data.message) {
-          toast.error(error.response.data.message);
-        }
-      },
+    console.debug("[Section] Saving section:", {
+      sectionId: section.id,
+      type: section.type,
+      filesCount: formValues.files?.filter(Boolean).length ?? 0,
     });
+
+    editSection(
+      { sectionId: section.id, section: formData },
+      {
+        onError: (error) => {
+          if (error.status === 422 && error.response?.data.message) {
+            toast.error(error.response.data.message);
+          }
+        },
+      }
+    );
   });
 
-  useArrayFiles({
-    urls: section?.files.map(({ url }) => ({
-      url: url || '',
-      fileName: (url || '').split('/').pop() || '',
-    })) || [],
-    setFiles: (files) => methods.setValue('files', files),
-  });
+  const ContentComponent = ContentComponents[section.type];
 
   return (
     <Reorder.Item
@@ -103,7 +135,7 @@ export const Section = ({ section }: Props) => {
                 openTranslationsModal(
                   "section",
                   section.id,
-                  section.title || `Section #${section.position}`,
+                  section.title || `Section #${section.position}`
                 ),
             },
             {
@@ -113,18 +145,29 @@ export const Section = ({ section }: Props) => {
           ]}
         />
       </div>
-      <FormProvider {...methods}>
-        <form
-          className="flex flex-col gap-10"
-          onSubmit={onSubmit}
-          onBlur={isTypeTextForm ? onSubmit : () => {}}
-        >
-          {Content[section.type]}
-          {!isTypeTextForm && (
-            <MainButton type="submit">Save</MainButton>
-          )}
-        </form>
-      </FormProvider>
+
+      {/*
+       * SectionPersistedFilesContext provides the backend's file metadata to all
+       * child content components.  They use it to display already-saved assets
+       * directly from their remote URLs — no blob re-fetch, no CORS dependency.
+       *
+       * SectionForm (new sections) does not wrap with this provider; its default
+       * value is [] which is correct since no files have been persisted yet.
+       */}
+      <SectionPersistedFilesContext.Provider value={section.files}>
+        <FormProvider {...methods}>
+          <form
+            className="flex flex-col gap-10"
+            onSubmit={onSubmit}
+            onBlur={isTypeTextForm ? onSubmit : () => {}}
+          >
+            <ContentComponent />
+            {!isTypeTextForm && (
+              <MainButton type="submit">Save</MainButton>
+            )}
+          </form>
+        </FormProvider>
+      </SectionPersistedFilesContext.Provider>
     </Reorder.Item>
   );
 };

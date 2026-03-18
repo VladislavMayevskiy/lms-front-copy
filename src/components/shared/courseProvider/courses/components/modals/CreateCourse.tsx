@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
 import { toast } from "react-toastify";
+import classNames from "classnames";
 import Modal from "components/ui/modal";
 import { Dropzone } from "components/ui/fields/Dropzone";
 import { TextField } from "components/ui/fields/TextField";
@@ -17,6 +18,20 @@ import { CourseProviderRoutes } from "constants/routes";
 import { useGetSchools } from "api/admin/schools/hooks";
 import { useGetLanguages } from "api/admin/languages/hooks";
 import { useFile } from "hooks/useFile";
+
+/** Status options shown in the create/edit modal. */
+const STATUS_OPTIONS: { label: string; value: number; description: string }[] = [
+  {
+    label: "Draft",
+    value: CourseStatusIds.Draft,
+    description: "Hidden from learners. Edit freely.",
+  },
+  {
+    label: "Published",
+    value: CourseStatusIds.Published,
+    description: "Visible to enrolled learners.",
+  },
+];
 
 export const CreateCourseModal = () => {
   const navigate = useNavigate();
@@ -278,6 +293,51 @@ export const CreateCourseModal = () => {
             />
           )}
         />
+        {/*
+         * ── Publication Status ────────────────────────────────────────────────
+         * This controls whether the course is visible to enrolled learners.
+         * It is a course-level setting — it does NOT affect how section content
+         * is saved (sections autosave independently via their own mutations).
+         *
+         * "Archived" is intentionally excluded here: archiving is a lifecycle
+         * action best performed via the dedicated editor header controls, not
+         * during course creation or routine editing.
+         * ── */}
+        <Controller
+          name="status"
+          control={control}
+          render={({ field: { value, onChange } }) => (
+            <div className="flex flex-col gap-2">
+              <span className="text-sm font-bold text-dark-grey font-[Lato]">
+                Publication Status
+              </span>
+              <div className="flex gap-3">
+                {STATUS_OPTIONS.map((option) => (
+                  <button
+                    key={option.value}
+                    type="button"
+                    onClick={() => onChange(option.value)}
+                    title={option.description}
+                    className={classNames(
+                      "flex-1 flex flex-col gap-0.5 px-4 py-3 rounded-[10px] border! text-left",
+                      "transition-colors duration-150 font-[Lato]",
+                      {
+                        "border-primary! bg-light-blue text-primary font-semibold":
+                          value === option.value,
+                        "border-border-light-grey! bg-white text-dark-grey hover:border-primary! hover:bg-grey":
+                          value !== option.value,
+                      }
+                    )}
+                  >
+                    <span className="text-sm font-semibold">{option.label}</span>
+                    <span className="text-xs opacity-60">{option.description}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        />
+
         <MainButton
           disabled={isPending || isEditPending}
           type="submit"

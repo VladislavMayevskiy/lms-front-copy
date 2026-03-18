@@ -1,17 +1,29 @@
 import { useState } from "react";
 import classNames from "classnames";
-import { useFormContext } from "react-hook-form";
 import Modal from "components/ui/modal";
-import { SectionTypesByName } from "constants/section";
 import { content } from "../../constants/content";
-import { useAddContentModal } from "../../hooks/useAddContentModal";
 import type { ContentType } from "../../types/content";
-import type { SectionSchema } from "../../validation/section.schema";
+import type { SectionTypes } from "types/models/Section";
 
-export const AddContentModal = () => {
+/**
+ * Pure, decoupled content-type picker modal.
+ *
+ * Previously this component called `useFormContext().setValue("type", …)` which
+ * coupled it to whichever FormProvider happened to be above it in the tree.
+ * That meant picking a new type never cleared `files`, `title`, or `content`,
+ * causing stale-file leakage and the "sections replace each other" bugs.
+ *
+ * Now the modal is stateless with respect to any form: it simply calls
+ * `onSelect(type)` and lets the caller decide what to do with the selection.
+ */
+type Props = {
+  isOpen: boolean;
+  onClose: () => void;
+  onSelect: (type: SectionTypes) => void;
+};
+
+export const AddContentModal = ({ isOpen, onClose, onSelect }: Props) => {
   const [selectedContent, setContent] = useState<ContentType | null>(null);
-  const { isOpen, onClose } = useAddContentModal();
-  const { setValue } = useFormContext<SectionSchema>();
 
   const handleClose = () => {
     setContent(null);
@@ -20,13 +32,7 @@ export const AddContentModal = () => {
 
   const handlePick = (item: ContentType) => {
     setContent(item);
-
-    setValue("type", SectionTypesByName[item.type], {
-      shouldDirty: true,
-      shouldTouch: true,
-      shouldValidate: true,
-    });
-
+    onSelect(item.type);
     handleClose();
   };
 
