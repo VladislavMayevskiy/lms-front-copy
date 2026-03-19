@@ -96,10 +96,9 @@ export const CoursesTable = ({ courses, isLoading }: Props) => {
                   classNames(
                     "min-h-[68px] font-normal text-base px-5 py-4 border-light-blue! border-t! border-b!",
                     "group-hover:bg-grey group-hover:border-primary! transition-colors duration-300",
-                    "flex items-center",
+                    "flex items-center min-w-0 overflow-hidden",
                     {
                       "border-l! rounded-l-[8px]!": index === 0,
-                      "min-w-0 overflow-hidden": index === 0,
                     }
                   )}
                 >

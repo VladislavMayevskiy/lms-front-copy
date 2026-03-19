@@ -11,7 +11,7 @@ export const columns = [
   columnHelper.accessor("name", {
     header: "Course Name",
     meta: {
-      className: "w-[45%]",
+      className: "w-[42%]",
     },
     cell: (info) => (
       <Link
@@ -34,7 +34,7 @@ export const columns = [
   columnHelper.accessor("schoolsCount", {
     header: "Assigned Schools",
     meta: {
-      className: "w-[12%]",
+      className: "w-[15%]",
     },
     cell: (info) => (
       <Schools

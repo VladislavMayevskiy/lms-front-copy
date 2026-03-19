@@ -9,7 +9,11 @@ import type { QuizSchema } from "./validation/quiz.schema";
 import { useQuizModal } from "../../../hooks/useQuizModal";
 import { useQuizDeleteModal } from "../../../hooks/useQuizDeleteModal";
 import { useUpdateUnitQuiz, useGenerateUnitQuiz } from "api/courseProvider/units/hooks";
+import { useSections } from "../../../hooks/useSections";
 import type { ApiQuizType } from "api/courseProvider/units/types";
+
+/** Section type names that the backend can generate quiz questions from. */
+const TEXT_SECTION_TYPES = new Set(["TITLE_AND_TEXT", "NOTE_FOR_TEACHER", "EMBED"]);
 
 type Props = {
   unitId: number;
@@ -21,6 +25,14 @@ export const QuizForm = ({ unitId, questions }: Props) => {
   const openConfirmQuizDeleteModal = useQuizDeleteModal((store) => store.openModal);
   const { mutate: updateQuiz, isPending } = useUpdateUnitQuiz();
   const { mutate: generateQuiz, isPending: isGenerating } = useGenerateUnitQuiz();
+
+  // Determine whether the unit has any text-based sections that the backend
+  // can generate quiz questions from.  This lets us show a clear pre-flight
+  // warning instead of letting the API call fail with a cryptic 422.
+  // SectionType.type is already the string name (e.g. "TITLE_AND_TEXT") as
+  // mapped by mapFromSection, so a direct Set lookup is sufficient.
+  const sections = useSections((store) => store.sections);
+  const hasTextSections = sections.some((s) => TEXT_SECTION_TYPES.has(s.type));
 
   const [questionsCount, setQuestionsCount] = useState("5");
 
@@ -53,10 +65,21 @@ export const QuizForm = ({ unitId, questions }: Props) => {
     });
   };
 
+  const NO_TEXT_CONTENT_MESSAGE =
+    "Quiz cannot be generated because this unit has no text content to generate from. " +
+    "Add at least one Text, Teacher Notes, or Embed section first.";
+
   const handleGenerateQuiz = () => {
     const count = Number(questionsCount);
     if (isNaN(count) || count < 1 || count > 20) {
       toast.error("Number of questions must be between 1 and 20.");
+      return;
+    }
+
+    // Pre-flight guard: avoid sending the request if we already know the
+    // backend will reject it with 422 "no text content".
+    if (!hasTextSections) {
+      toast.error(NO_TEXT_CONTENT_MESSAGE);
       return;
     }
 
@@ -66,7 +89,13 @@ export const QuizForm = ({ unitId, questions }: Props) => {
         toast.success("Quiz generated successfully!");
       },
       onError: (error) => {
-        toast.error(error.response?.data.message || "Failed to generate quiz.");
+        // 422 from the backend means "no text content to generate from".
+        // Surface a clear explanation instead of the raw API message.
+        if (error.status === 422) {
+          toast.error(NO_TEXT_CONTENT_MESSAGE);
+        } else {
+          toast.error(error.response?.data.message || "Failed to generate quiz.");
+        }
       },
     });
   };
@@ -87,8 +116,13 @@ export const QuizForm = ({ unitId, questions }: Props) => {
           <MainButton
             type="button"
             onClick={handleGenerateQuiz}
-            disabled={isGenerating || isPending}
+            disabled={isGenerating || isPending || !hasTextSections}
             isLoading={isGenerating}
+            title={
+              !hasTextSections
+                ? "Add at least one Text, Teacher Notes, or Embed section to enable quiz generation."
+                : undefined
+            }
           >
             Generate Quiz
           </MainButton>

@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { authStore } from "stores/authStore";
 import { useCurrentUserQuery } from "api/global/hooks";
 import { localStore } from "stores/localStore";
+import { isRtlLanguage } from "constants/languages";
 
 import type { LanguageEnumsType } from "types/general";
 
@@ -20,7 +21,7 @@ export const useLoadCurrentUser = () => {
   useEffect(() => {
     if (data) {
       setUser(data);
-      setDirection(data.language === "ar" ? "rtl" : "ltr");
+      setDirection(isRtlLanguage(data.language) ? "rtl" : "ltr");
       setLanguage(data.language as LanguageEnumsType);
     }
   }, [data]);

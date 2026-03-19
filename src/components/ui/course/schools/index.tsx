@@ -28,7 +28,7 @@ export const Schools = ({ schoolsCount, course, disabled }: Props) => {
         classNames(
           "flex items-center justify-center",
           "border! border-border-light-grey! rounded-full",
-          "py-1.5! px-4! w-[122px] bg-grey! gap-2.5",
+          "py-1.5! px-3! w-full max-w-[130px] bg-grey! gap-1.5",
           {
             "cursor-default!": count === 0 || disabled,
           }

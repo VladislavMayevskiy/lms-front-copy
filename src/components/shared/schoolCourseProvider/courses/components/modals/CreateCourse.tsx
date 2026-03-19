@@ -23,10 +23,12 @@ export const CreateCourseModal = () => {
   const { data: languagesData } = useGetLanguages();
   // Real API shape: { value: string; label: string; is_rtl: boolean }
   // Map to the {id, name} shape that SelectMultipleField expects.
-  const languageOptions = (languagesData?.data ?? []).map((lang) => ({
-    id: lang.value,   // e.g. "en", "ko" — always a string, never undefined
-    name: lang.label, // e.g. "English", "Korean"
-  }));
+  const languageOptions = (languagesData?.data ?? [])
+    .map((lang) => ({
+      id: lang.value,   // e.g. "en", "ko" — always a string, never undefined
+      name: lang.label, // e.g. "English", "Korean"
+    }))
+    .sort((a, b) => a.name.localeCompare(b.name));
   const { mutate: createCourse, isPending } = useCreateCourse();
   const { mutate: editCourse, isPending: isEditPending } = useEditCourse();
   const { control, handleSubmit, setError, setValue } = useForm<CourseSchema>({
@@ -161,20 +163,7 @@ export const CreateCourseModal = () => {
             />
           )}
         />
-        <Controller
-          name="description"
-          control={control}
-          render={({ field, fieldState: { error } }) => (
-            <TextAreatField
-              id="create-course-description"
-              label="Description*"
-              placeholder="Enter description"
-              fieldContainerClassName="h-24"
-              error={error?.message}
-              {...field}
-            />
-          )}
-        />
+        {/* description is collected server-side; not shown in the creation form */}
         <Controller
           control={control}
           name="languages"
@@ -196,8 +185,8 @@ export const CreateCourseModal = () => {
             render={({ field, fieldState: { error } }) => (
               <TextField
                 id="create-course-instructor-name"
-                label="Instructor Name*"
-                placeholder="Enter instructor name"
+                label="Teacher Name*"
+                placeholder="Enter teacher name"
                 error={error?.message}
                 {...field}
               />

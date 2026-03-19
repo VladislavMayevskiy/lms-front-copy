@@ -7,6 +7,7 @@ import { Video } from "./Video";
 import { Document } from "./Document";
 import { Audio } from "./Audio";
 import { Embed } from "./Embed";
+import { NoteForTeacher } from "./NoteForTeacher";
 
 /**
  * Map from section type name to the React component that renders it.
@@ -23,5 +24,5 @@ export const ContentComponents: Record<SectionTypes, ComponentType> = {
   "DOCUMENT": Document,
   "AUDIO": Audio,
   "EMBED": Embed,
-  "NOTE_FOR_TEACHER": TitleAndText,
+  "NOTE_FOR_TEACHER": NoteForTeacher,
 };

@@ -60,32 +60,37 @@ export const Sections = () => {
   };
 
   /**
-   * Reconciliation fix: use an ID-fingerprint comparison instead of a
-   * length-only check.
+   * Sync Zustand sections from the API response — but ONLY when the SET of
+   * section IDs changes (a section was added or deleted).
    *
-   * Previous code (`data.data.length !== sections.length`) only synced the
-   * Zustand store when sections were added or deleted.  Edits (same count,
-   * different content) were never reflected in the store.
+   * ## Why sorted-set comparison, not ordered-join comparison
    *
-   * The ID-fingerprint approach:
-   *  - Correctly updates after add / delete / reorder (IDs or order change).
-   *  - Avoids an infinite render loop: `data.data` is a new array reference on
-   *    every render (produced by mapFromSections), so a naive "always update"
-   *    would call setSections → Zustand re-render → effect fires again → loop.
-   *    Comparing by joined ID string breaks the cycle.
-   *  - Respects the reorder flag so in-flight drag operations are not clobbered
-   *    by a concurrent refetch.
+   * The previous code compared IDs in the order the server returned them:
+   *   incomingIds = "3,1,2"
+   *   currentIds  = "1,2,3"   ← user reordered locally
+   *   → different string → setSections() → visual jump to server order
+   *
+   * After a plain content-edit save the backend may return sections sorted by
+   * their `position` column, which can differ from the user's local drag order.
+   * That caused the "image block jumped to the top" bug.
+   *
+   * Using sorted IDs (set comparison) means:
+   *   - Add / Delete: set membership differs → sync ✓
+   *   - Edit / re-fetch with same sections in any order → no sync, no jump ✓
+   *   - User drag-reorder: local state is authoritative (set from onReorder) ✓
+   *   - After reorderSections succeeds the local order IS the intended order,
+   *     so not re-syncing from server is correct ✓
    */
   useEffect(() => {
     if (isLoading || isReorderRef.current) return;
 
-    const incomingIds = data.data.map((s) => s.id).join(",");
-    const currentIds = sections.map((s) => s.id).join(",");
+    const sortedIncoming = [...data.data].sort((a, b) => a.id - b.id).map((s) => s.id).join(",");
+    const sortedCurrent  = [...sections ].sort((a, b) => a.id - b.id).map((s) => s.id).join(",");
 
-    if (incomingIds !== currentIds) {
-      console.debug("[Sections] Syncing sections from API:", {
-        incoming: incomingIds,
-        current: currentIds,
+    if (sortedIncoming !== sortedCurrent) {
+      console.debug("[Sections] ID set changed – syncing from API:", {
+        incoming: sortedIncoming,
+        current:  sortedCurrent,
       });
       setSections(data.data);
     }

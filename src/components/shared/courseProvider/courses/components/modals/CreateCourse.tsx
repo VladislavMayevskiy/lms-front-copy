@@ -38,12 +38,12 @@ export const CreateCourseModal = () => {
   const { course, setCourse } = useCourseStore();
   const { data: schools } = useGetSchools();
   const { data: languagesData } = useGetLanguages();
-  // Real API shape: { value: string; label: string; is_rtl: boolean }
-  // Map to the {id, name} shape that SelectMultipleField expects.
-  const languageOptions = (languagesData?.data ?? []).map((lang) => ({
-    id: lang.value,  // e.g. "en", "ko" — always a string, never undefined
-    name: lang.label, // e.g. "English", "Korean"
-  }));
+  const languageOptions = (languagesData?.data ?? [])
+    .map((lang) => ({
+      id: lang.value,   
+      name: lang.label,
+    }))
+    .sort((a, b) => a.name.localeCompare(b.name));
   const { data: courseData } = useCourseQuery(course?.id || 0);
   console.log(languagesData);
 
@@ -191,20 +191,6 @@ export const CreateCourseModal = () => {
           )}
         />
         <Controller
-          name="description"
-          control={control}
-          render={({ field, fieldState: { error } }) => (
-            <TextAreatField
-              id="create-course-description"
-              label="Description*"
-              placeholder="Enter description"
-              fieldContainerClassName="h-24"
-              error={error?.message}
-              {...field}
-            />
-          )}
-        />
-        <Controller
           control={control}
           name="schools"
           render={({ field: { value, onChange }, fieldState: { error } }) => {
@@ -243,8 +229,8 @@ export const CreateCourseModal = () => {
             render={({ field, fieldState: { error } }) => (
               <TextField
                 id="create-course-instructor-name"
-                label="Instructor Name*"
-                placeholder="Enter instructor name"
+                label="Teacher Name*"
+                placeholder="Enter teacher name"
                 error={error?.message}
                 {...field}
               />
@@ -293,16 +279,7 @@ export const CreateCourseModal = () => {
             />
           )}
         />
-        {/*
-         * ── Publication Status ────────────────────────────────────────────────
-         * This controls whether the course is visible to enrolled learners.
-         * It is a course-level setting — it does NOT affect how section content
-         * is saved (sections autosave independently via their own mutations).
-         *
-         * "Archived" is intentionally excluded here: archiving is a lifecycle
-         * action best performed via the dedicated editor header controls, not
-         * during course creation or routine editing.
-         * ── */}
+
         <Controller
           name="status"
           control={control}

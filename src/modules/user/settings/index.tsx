@@ -17,6 +17,7 @@ import { settingsSchemaResolver } from "./validation/settings.schema";
 import type { SettingsSchema } from "./validation/settings.schema";
 import { useSaveSettings } from "api/user/settings/hooks";
 import { useTranslation } from "react-i18next";
+import { SUPPORTED_LANGUAGES } from "constants/languages";
 
 function Settings() {
   const { t } = useTranslation();
@@ -32,11 +33,6 @@ function Settings() {
     label: timezone,
     value: timezone,
   }));
-
-  const languagesList = [
-    { value: "en", label: "English" },
-    { value: "ar", label: "Arabic" },
-  ];
 
   const themesList = [
     { value: "light", label: "Light" },
@@ -308,7 +304,7 @@ function Settings() {
 
                           {value &&
                             (() => {
-                              const language = languagesList.find(
+                              const language = SUPPORTED_LANGUAGES.find(
                                 (l) => l.value === value
                               );
                               if (!language) return null;
@@ -362,7 +358,7 @@ function Settings() {
                           className="lms-dark-panel"
                         >
                           <VStack align="stretch" spacing="4px">
-                            {languagesList.map((language) => (
+                            {SUPPORTED_LANGUAGES.map((language) => (
                               <HStack key={language.value} spacing="8px">
                                 <Checkbox
                                   isChecked={value === language.value}

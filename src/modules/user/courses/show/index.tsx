@@ -12,6 +12,21 @@ import { useTranslation } from "react-i18next";
 import { Spinner } from "components/ui/spinner";
 import { useCurrentUserQuery } from "api/global/hooks";
 
+/**
+ * Formats a duration stored in minutes to a human-readable string.
+ * 90  → "1 h 30 min"
+ * 45  → "45 min"
+ * 120 → "2 h"
+ */
+function formatDurationMinutes(totalMinutes: number): string {
+  if (!totalMinutes) return "0 min";
+  const h = Math.floor(totalMinutes / 60);
+  const m = totalMinutes % 60;
+  if (h === 0) return `${m} min`;
+  if (m === 0) return `${h} h`;
+  return `${h} h ${m} min`;
+}
+
 function ShowCourse() {
 const { t } = useTranslation();
 const { id } = useParams<{ id: string }>()
@@ -79,7 +94,7 @@ const [openModule, setOpenModule] = useState<number | null>(null);
             </Box>
 
             <Box bgColor={"#CAE0C3"} px={3} py={1} borderRadius="6px">
-              <Text fontSize="14px">{data.duration} {t("general.hours")}</Text>
+              <Text fontSize="14px">{formatDurationMinutes(data.duration)}</Text>
             </Box>
 
             <Box bgColor={"#CAE0C3"} px={3} py={1} borderRadius="6px">
