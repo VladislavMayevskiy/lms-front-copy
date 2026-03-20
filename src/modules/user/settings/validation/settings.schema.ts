@@ -11,6 +11,9 @@ const settingsSchema = z.object({
   language: z.string(),
   timezone: z.string(),
   theme: z.custom<"light" | "dark">(),
+  /** Preferred language for course content — separate from UI/interface language.
+   *  Backend requires a non-null, non-empty language code string. */
+  preferred_course_language: z.string().min(1),
 });
 
 export type SettingsSchema = z.infer<typeof settingsSchema>;

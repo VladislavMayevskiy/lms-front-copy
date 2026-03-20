@@ -22,6 +22,7 @@ import { SUPPORTED_LANGUAGES } from "constants/languages";
 function Settings() {
   const { t } = useTranslation();
   const [isLanguagesOpen, setIsLanguagesOpen] = useState(false);
+  const [isPreferredLangOpen, setIsPreferredLangOpen] = useState(false);
   const [isTimeZoneOpen, setIsTimeZoneOpen] = useState(false);
   const [isModeOpen, setIsModeOpen] = useState(false);
 
@@ -40,6 +41,7 @@ function Settings() {
   ];
 
   const toggleLanguages = () => setIsLanguagesOpen((prev) => !prev);
+  const togglePreferredLang = () => setIsPreferredLangOpen((prev) => !prev);
   const toggleTimeZone = () => setIsTimeZoneOpen((prev) => !prev);
   const toggleMode = () => setIsModeOpen((prev) => !prev);
 
@@ -55,6 +57,10 @@ function Settings() {
           language: user.language,
           timezone: user.timezone,
           theme: user.theme,
+          // Backend requires a non-null string. Fall back to the interface
+          // language if the user has not set a course language preference yet.
+          preferred_course_language:
+            user.preferred_course_language || user.language || "en",
         }
       : {
           send_notifications: false,
@@ -66,6 +72,7 @@ function Settings() {
           language: "en",
           timezone: "Europe/London",
           theme: "light",
+          preferred_course_language: "en",
         },
     resolver: settingsSchemaResolver,
   });
@@ -524,6 +531,136 @@ function Settings() {
                                   className="lms-muted"
                                 >
                                   {tz.label}
+                                </Text>
+                              </HStack>
+                            ))}
+                          </VStack>
+                        </Box>
+                      )}
+                    </VStack>
+                  )}
+                />
+              </Box>
+
+              {/* ── Preferred Course Language ─────────────────────────────────────────
+                  Separate from the UI/interface language.
+                  Controls which language the user prefers for course content.
+                  Uses the same SUPPORTED_LANGUAGES list as the interface language
+                  selector — no extra API call required.
+              ── */}
+              <Box mb="30px" w="100%">
+                <Controller
+                  control={control}
+                  name="preferred_course_language"
+                  render={({ field: { value, onChange } }) => (
+                    <VStack align="stretch" spacing="4px" position="relative">
+                      <Text fontFamily="Lato" fontSize="14px" fontWeight="bold" className="lms-muted">
+                        Preferred Course Language
+                      </Text>
+
+                      <Box
+                        borderWidth="1px"
+                        borderRadius="10px"
+                        borderColor="#B4D6DF"
+                        bg="#F5F7F9"
+                        className="lms-dark-input w-full md:w-[542px]"
+                        minH="44px"
+                        px="12px"
+                        py="12px"
+                        position="relative"
+                        cursor="pointer"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          togglePreferredLang();
+                        }}
+                      >
+                        <Box
+                          display="flex"
+                          flexWrap="wrap"
+                          gap="8px"
+                          maxH="44px"
+                          overflowY="auto"
+                          pr="40px"
+                        >
+                          {value &&
+                            (() => {
+                              const lang = SUPPORTED_LANGUAGES.find((l) => l.value === value);
+                              if (!lang) return null;
+                              return (
+                                <Text
+                                  fontFamily="Lato"
+                                  fontSize="14px"
+                                  color="#434645"
+                                  whiteSpace="nowrap"
+                                  className="lms-muted"
+                                >
+                                  {lang.label}
+                                </Text>
+                              );
+                            })()}
+                        </Box>
+
+                        <Box
+                          position="absolute"
+                          right="12px"
+                          top="50%"
+                          transform={
+                            isPreferredLangOpen
+                              ? "translateY(-50%) rotate(180deg)"
+                              : "translateY(-50%) rotate(0deg)"
+                          }
+                          transition="0.2s ease"
+                        >
+                          <Chevron />
+                        </Box>
+                      </Box>
+
+                      {isPreferredLangOpen && (
+                        <Box
+                          position="absolute"
+                          top="78px"
+                          left="0"
+                          zIndex={100}
+                          width="624px"
+                          borderRadius="20px"
+                          borderWidth="1px"
+                          borderColor="#B4D6DF"
+                          bg="white"
+                          boxShadow="0 8px 25px rgba(0,0,0,0.15)"
+                          py="10px"
+                          px="22px"
+                          minH="150px"
+                          maxH="260px"
+                          overflowY="auto"
+                          className="lms-dark-panel"
+                        >
+                          <VStack align="stretch" spacing="4px">
+                            {SUPPORTED_LANGUAGES.map((lang) => (
+                              <HStack key={lang.value} spacing="8px">
+                                <Checkbox
+                                  isChecked={value === lang.value}
+                                  onChange={() => {
+                                    onChange(lang.value);
+                                    togglePreferredLang();
+                                  }}
+                                  icon={<Check />}
+                                  sx={{
+                                    ".chakra-checkbox__control": {
+                                      borderRadius: "5px",
+                                      borderColor: "#B4D6DF",
+                                      width: "20px",
+                                      height: "20px",
+                                      borderWidth: "1px",
+                                    },
+                                  }}
+                                />
+                                <Text
+                                  fontFamily="Lato"
+                                  fontSize="16px"
+                                  color="#434645"
+                                  className="lms-muted"
+                                >
+                                  {lang.label}
                                 </Text>
                               </HStack>
                             ))}

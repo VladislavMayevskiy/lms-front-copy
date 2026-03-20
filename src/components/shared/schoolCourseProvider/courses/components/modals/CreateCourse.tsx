@@ -14,8 +14,9 @@ import { useCreateCourse, useEditCourse } from "api/schoolCourseProvider/courses
 import { useCourseStore } from "../../hooks/useCourse";
 import { CourseStatusIds, CourseTypeIds } from "constants/course";
 import { SchoolCourseProviderRoutes } from "constants/routes";
-import { useFile } from "hooks/useFile";
 import { useGetLanguages } from "api/admin/languages/hooks";
+import { useSaveSettings } from "api/user/settings/hooks";
+import { authStore } from "stores/authStore";
 
 export const CreateCourseModal = () => {
   const navigate = useNavigate();
@@ -31,7 +32,10 @@ export const CreateCourseModal = () => {
     .sort((a, b) => a.name.localeCompare(b.name));
   const { mutate: createCourse, isPending } = useCreateCourse();
   const { mutate: editCourse, isPending: isEditPending } = useEditCourse();
-  const { control, handleSubmit, setError, setValue } = useForm<CourseSchema>({
+  const { mutate: saveSettings } = useSaveSettings();
+  const user = authStore((store) => store.user);
+
+  const { control, handleSubmit, setError } = useForm<CourseSchema>({
     values: {
       name: course?.name || "",
       description: course?.description || "",
@@ -47,16 +51,28 @@ export const CreateCourseModal = () => {
     },
     resolver: courseSchemaResolver,
   });
-  const fileName = (course?.image || '').split('/').pop() || '';
-
-  useFile({
-    fileName,
-    fileUrl: course?.image,
-    // file may be null if the URL fails to load (e.g. CORS on Azure Blob URLs in local dev)
-    setFile: (file) => setValue('image', file),
-  });
   const isOpen = useModal((store) => store.modals[CourseProviderModalConsts.CreateCourse].isOpen);
   const closeModal = useModal((store) => store.closeModal);
+
+  /** Save user's preferred course language without blocking the main form submit. */
+  const handlePreferredLanguageChange = (value: string) => {
+    if (!user) return;
+    saveSettings({
+      send_notifications: user.send_notifications,
+      course_reminders: user.course_reminders,
+      new_courses: user.new_courses,
+      assignment_feedback: user.assignment_feedback,
+      progress_updates: user.progress_updates,
+      announcements: user.announcements,
+      language: user.language,
+      timezone: user.timezone,
+      theme: user.theme,
+      // Backend requires a non-null, non-empty string.
+      // When user picks "No preference" (empty string) fall back to their
+      // interface language so the payload is always valid.
+      preferred_course_language: value || user?.language || "en",
+    });
+  };
 
   const onSubmit = handleSubmit((data) => {
     const formData = new FormData();
@@ -146,6 +162,7 @@ export const CreateCourseModal = () => {
                 onChange={onChange}
                 accept={{ "image/*": [] }}
                 className="h-[200px] overflow-hidden"
+                previewUrl={course?.image ?? undefined}
               />
             </div>
           )}
@@ -235,6 +252,29 @@ export const CreateCourseModal = () => {
             />
           )}
         />
+        {/* ── Preferred Course Language (user preference, auto-saves to user settings) ── */}
+        <div className="flex flex-col gap-2">
+          <label htmlFor="preferred-course-language-scp" className="text-sm font-bold text-dark-grey font-[Lato]">
+            Preferred Course Language
+          </label>
+          <select
+            id="preferred-course-language-scp"
+            value={user?.preferred_course_language ?? ""}
+            onChange={(e) => handlePreferredLanguageChange(e.target.value)}
+            className="w-full rounded-[10px] border border-middle-blue bg-grey px-3 py-2 text-sm font-[Lato] text-dark-grey focus:outline-none focus:border-primary"
+          >
+            <option value="">— No preference —</option>
+            {languageOptions.map((lang) => (
+              <option key={lang.id} value={lang.id}>
+                {lang.name}
+              </option>
+            ))}
+          </select>
+          <p className="text-xs text-gray-500 font-[Lato]">
+            The primary language you prefer for course content. Saved to your profile.
+          </p>
+        </div>
+
         <MainButton
           disabled={isPending || isEditPending}
           type="submit"

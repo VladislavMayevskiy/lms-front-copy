@@ -17,7 +17,8 @@ import { CourseStatusIds, CourseTypeIds } from "constants/course";
 import { CourseProviderRoutes } from "constants/routes";
 import { useGetSchools } from "api/admin/schools/hooks";
 import { useGetLanguages } from "api/admin/languages/hooks";
-import { useFile } from "hooks/useFile";
+import { useSaveSettings } from "api/user/settings/hooks";
+import { authStore } from "stores/authStore";
 
 /** Status options shown in the create/edit modal. */
 const STATUS_OPTIONS: { label: string; value: number; description: string }[] = [
@@ -40,16 +41,18 @@ export const CreateCourseModal = () => {
   const { data: languagesData } = useGetLanguages();
   const languageOptions = (languagesData?.data ?? [])
     .map((lang) => ({
-      id: lang.value,   
+      id: lang.value,
       name: lang.label,
     }))
     .sort((a, b) => a.name.localeCompare(b.name));
   const { data: courseData } = useCourseQuery(course?.id || 0);
-  console.log(languagesData);
 
   const { mutate: createCourse, isPending } = useCreateCourse();
   const { mutate: editCourse, isPending: isEditPending } = useEditCourse();
-  const { control, handleSubmit, setError, reset, setValue } = useForm<CourseSchema>({
+  const { mutate: saveSettings } = useSaveSettings();
+  const user = authStore((store) => store.user);
+
+  const { control, handleSubmit, setError, reset } = useForm<CourseSchema>({
     values: {
       name: courseData?.name || "",
       description: courseData?.description || "",
@@ -66,16 +69,28 @@ export const CreateCourseModal = () => {
     },
     resolver: courseSchemaResolver,
   });
-  const fileName = (course?.image || '').split('/').pop() || '';
   const isOpen = useModal((store) => store.modals[CourseProviderModalConsts.CreateCourse].isOpen);
-
   const closeModal = useModal((store) => store.closeModal);
 
-  useFile({
-    fileName,
-    fileUrl: course?.image,
-    setFile: (file) => setValue('image', file),
-  });
+  /** Save user's preferred course language without blocking the main form submit. */
+  const handlePreferredLanguageChange = (value: string) => {
+    if (!user) return;
+    saveSettings({
+      send_notifications: user.send_notifications,
+      course_reminders: user.course_reminders,
+      new_courses: user.new_courses,
+      assignment_feedback: user.assignment_feedback,
+      progress_updates: user.progress_updates,
+      announcements: user.announcements,
+      language: user.language,
+      timezone: user.timezone,
+      theme: user.theme,
+      // Backend requires a non-null, non-empty string.
+      // When user picks "No preference" (empty string) fall back to their
+      // interface language so the payload is always valid.
+      preferred_course_language: value || user?.language || "en",
+    });
+  };
 
   const onSubmit = handleSubmit((data) => {
     const formData = new FormData();
@@ -173,6 +188,7 @@ export const CreateCourseModal = () => {
                 onChange={onChange}
                 accept={{ "image/*": [] }}
                 className="h-[200px] overflow-hidden"
+                previewUrl={course?.image ?? undefined}
               />
             </div>
           )}
@@ -314,6 +330,29 @@ export const CreateCourseModal = () => {
             </div>
           )}
         />
+
+        {/* ── Preferred Course Language (user preference, auto-saves to user settings) ── */}
+        <div className="flex flex-col gap-2">
+          <label htmlFor="preferred-course-language" className="text-sm font-bold text-dark-grey font-[Lato]">
+            Preferred Course Language
+          </label>
+          <select
+            id="preferred-course-language"
+            value={user?.preferred_course_language ?? ""}
+            onChange={(e) => handlePreferredLanguageChange(e.target.value)}
+            className="w-full rounded-[10px] border border-middle-blue bg-grey px-3 py-2 text-sm font-[Lato] text-dark-grey focus:outline-none focus:border-primary"
+          >
+            <option value="">— No preference —</option>
+            {languageOptions.map((lang) => (
+              <option key={lang.id} value={lang.id}>
+                {lang.name}
+              </option>
+            ))}
+          </select>
+          <p className="text-xs text-gray-500 font-[Lato]">
+            The primary language you prefer for course content. Saved to your profile.
+          </p>
+        </div>
 
         <MainButton
           disabled={isPending || isEditPending}

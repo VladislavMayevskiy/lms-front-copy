@@ -17,6 +17,7 @@ export type ApiUserType = {
   created_at: string;
   image: Nullable<string>;
   language: string;
+  preferred_course_language: string | null;
   new_courses: boolean;
   progress_updates: boolean;
   send_notifications: boolean;
