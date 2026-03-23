@@ -21,6 +21,7 @@ import SettingsIcon from "assets/imgs/user/heroicons-outline/settings.svg?react"
 import LogOutIcon from "assets/imgs/user/heroicons-outline/logout.svg?react";
 
 import SidebarIcon from "assets/imgs/user/sidebar.svg?react";
+import MenImage from "assets/imgs/men.png";
 import { authStore } from "stores/authStore";
 
 import { UserRoutes } from "constants/routes";
@@ -235,25 +236,16 @@ export default function UserLayout({ children }: PropsWithChildren<Props>) {
               spacing={isOpen ? 3 : 0}
               borderRadius="10px"
             >
-              {User?.image ? (
-                <Image
-                  width="32px"
-                  height="32px"
-                  bg="#E9ECEF"
-                  borderRadius="5px"
-                  src={User.image}
-                  objectFit="cover"
-                  alt="Profile"
-                  onError={(e) => {
-                    if (import.meta.env.DEV) {
-                      console.debug('[UserLayout] Sidebar avatar failed to load:', (e.target as HTMLImageElement).src);
-                    }
-                    (e.target as HTMLImageElement).style.display = 'none';
-                  }}
-                />
-              ) : (
-                <Image width="32px" height="32px" bg="#E9ECEF" borderRadius="5px" />
-              )}
+              <Image
+                width="32px"
+                height="32px"
+                bg="#E9ECEF"
+                borderRadius="5px"
+                src={User?.image ?? MenImage}
+                fallbackSrc={MenImage}
+                objectFit="cover"
+                alt="Profile"
+              />
               {isOpen && (
                 <Text>
                   {User?.first_name} {User?.last_name}

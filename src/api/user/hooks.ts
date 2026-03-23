@@ -19,6 +19,7 @@ import type {
   TeacherStudentCoursesResponse,
   TeacherStudentCourseQuizResultsResponse,
 } from "./types";
+import type { CurrentUserResponse } from "api/global/types";
 
 
 export const useUpdatePasswordUser = () => {
@@ -28,15 +29,36 @@ export const useUpdatePasswordUser = () => {
     })
 }
 
+/** Append (or replace) a `_v=<timestamp>` param to `url` so the browser
+ *  is forced to reload the image even if the base URL hasn't changed. */
+const addCacheBust = (url: string | null | undefined): string | null => {
+  if (!url) return null;
+  if (url.includes('_v=')) {
+    return url.replace(/_v=\d+/, `_v=${Date.now()}`);
+  }
+  return url.includes('?') ? `${url}&_v=${Date.now()}` : `${url}?_v=${Date.now()}`;
+};
+
 export const useUpdateImageUser = () => {
   return useMutation({
     mutationKey: ['update-user-image'],
     mutationFn: (file: File) => UpdateImageUser(file),
     onSuccess: (res) => {
-      if (res?.data) {
-        queryClient.setQueryData(["current-user"], res);
-      }
-      queryClient.invalidateQueries({ queryKey: ["current-user"] });
+      // Use an updater function so we merge into the existing cache entry rather
+      // than blindly replacing it. Also append a cache-bust param so every
+      // subscriber (sidebar, drawer, profile page, …) forces a fresh browser
+      // fetch of the new image, even when the base URL hasn't changed.
+      queryClient.setQueryData(
+        ['current-user'],
+        (old: CurrentUserResponse | undefined): CurrentUserResponse | undefined => {
+          if (!old?.data) return old;
+          // Handle both response shapes: { data: ApiUserType } or ApiUserType directly
+          const patch = res?.data ?? null;
+          const merged = patch ? { ...old.data, ...patch } : old.data;
+          return { data: { ...merged, image: addCacheBust(merged.image) } };
+        },
+      );
+      queryClient.invalidateQueries({ queryKey: ['current-user'] });
     },
   });
 };
@@ -44,8 +66,19 @@ export const useUpdateImageUser = () => {
 export const useDeleteImageUser = () => {
   return useMutation({
     mutationFn: DeleteImageUser,
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["current-user"] }); },
-  })
+    onSuccess: () => {
+      // Immediately clear the image in the cache so the avatar disappears
+      // without waiting for the background refetch to complete.
+      queryClient.setQueryData(
+        ['current-user'],
+        (old: CurrentUserResponse | undefined): CurrentUserResponse | undefined => {
+          if (!old?.data) return old;
+          return { data: { ...old.data, image: null } };
+        },
+      );
+      queryClient.invalidateQueries({ queryKey: ['current-user'] });
+    },
+  });
 }
 
 export const useDeleteUser = () => {

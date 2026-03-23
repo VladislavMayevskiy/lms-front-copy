@@ -23,6 +23,7 @@ import ProfileIcon from "assets/imgs/user/heroicons-outline/profile.svg?react";
 import SettingsIcon from "assets/imgs/user/heroicons-outline/settings.svg?react";
 import BillingIcon from "assets/imgs/user/heroicons-outline/billing.svg?react";
 import LogOutIcon from "assets/imgs/user/heroicons-outline/logout.svg?react";
+import MenImage from "assets/imgs/men.png";
 
 import { useCurrentUserQuery } from "api/global/hooks";
 
@@ -119,7 +120,16 @@ export default function UserMenuDrawer({ isOpen, onClose }: Props) {
               spacing={isOpen ? 3 : 0}
               borderRadius="10px"
             >
-              <Image width="32px" height="32px" bg="#E9ECEF" borderRadius="5px" />
+              <Image
+                width="32px"
+                height="32px"
+                bg="#E9ECEF"
+                borderRadius="5px"
+                src={User?.image ?? MenImage}
+                fallbackSrc={MenImage}
+                objectFit="cover"
+                alt="Profile"
+              />
               {isOpen && (
                 <Text>
                   {User?.first_name} {User?.last_name}
