@@ -37,7 +37,7 @@ function Teacher() {
     <UserLayout title="Community Academics Association Prime District">
       <VStack spacing={6} align="stretch">
 
-      <UserBox>
+      <UserBox hideTitle>
         <HStack justify="space-between" flexWrap="wrap" rowGap={2}>
           <VStack align="flex-start" spacing={0}>
             <Text fontFamily="Lato" fontWeight="semibold" fontSize="18px">
@@ -73,19 +73,19 @@ function Teacher() {
         </HStack>
       </UserBox>
 
-      <UserBox>
+      <UserBox hideTitle>
         <CourseAnalyticsCard courseId={selectedCourseId} />
       </UserBox>
 
-      <UserBox>
+      <UserBox hideTitle>
         <AtRiskStudents courseId={selectedCourseId} />
       </UserBox>
 
-      <UserBox>
+      <UserBox hideTitle>
         <CourseStudentsList />
       </UserBox>
 
-      <UserBox>
+      <UserBox hideTitle>
         <UnitAnalyticsBlock courseId={selectedCourseId} />
       </UserBox>
 

@@ -27,3 +27,9 @@ export const getNewUsers = async (months: number): Promise<ApiNewUsersStatsRespo
 
   return response.data;
 };
+
+export const getTotalStudents = async () => {
+  const response = await client.get(AdminApiRoutes.totalStudents);
+
+  return response.data;
+};

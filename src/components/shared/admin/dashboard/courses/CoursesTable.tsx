@@ -72,20 +72,22 @@ export const CoursesTable = ({ courses, isLoading }: Props) => {
               >
                 <div
                   className={
-                  classNames(
-                    "min-h-[68px] font-normal text-base px-5 py-4 border-light-blue! border-t! border-b!",
-                    // "group-hover:bg-grey group-hover:border-primary! transition-colors duration-300",
-                    "flex items-center",
-                    {
-                      "border-l! rounded-l-lg!": index === 0,
-                      "border-r! rounded-r-lg! justify-end": index + 1 === row.getVisibleCells().length,
-                    }
-                  )}
+                    classNames(
+                      "min-h-[68px] font-normal text-base px-5 py-4 border-light-blue! border-t! border-b!",
+                      // "group-hover:bg-grey group-hover:border-primary! transition-colors duration-300",
+                      "flex items-center",
+                      {
+                        "border-l! rounded-l-lg!": index === 0,
+                        "border-r! rounded-r-lg! justify-end": index + 1 === row.getVisibleCells().length,
+                      }
+                    )}
                 >
-                  {flexRender(
-                    cell.column.columnDef.cell,
-                    cell.getContext(),
-                  )}
+                  {String(cell.getValue?.() ?? "").length > 40
+                    ? `${String(cell.getValue?.() ?? "").slice(0, 90)}...`
+                    : flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
                 </div>
               </td>
             ))}

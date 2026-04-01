@@ -3,7 +3,9 @@ import {
   TotalCourses,
   MostPopularCourse,
   NewUsers,
+  TotalStudents
 } from "components/shared/admin/dashboard/stats";
+
 import { CoursesList } from "components/shared/admin/dashboard/courses/CoursesList";
 
 function SchoolAdminDashboard() {
@@ -13,6 +15,7 @@ function SchoolAdminDashboard() {
         <div className="grid grid-cols-2 gap-4">
           <div className="flex flex-col gap-4">
             <TotalCourses />
+            <TotalStudents/>
           </div>
           <MostPopularCourse />
         </div>

@@ -1,10 +1,10 @@
 import { Spinner } from "components/ui/spinner";
 import { Card, LabledIcon } from "../ui";
-import CoursesIcon from "assets/imgs/admin/dashboard/courses.svg?react";
-import { useTotalCourses } from "api/admin/dashboard/hooks";
+import UsersIcon from "assets/imgs/admin/dashboard/users.svg?react";
+import { useTotalStudents } from "api/admin/dashboard/hooks";
 
-export const TotalCourses = () => {
-  const { data, isLoading } = useTotalCourses();
+export const TotalStudents = () => {
+  const { data, isLoading } = useTotalStudents();
 
   if (isLoading) {
     return (
@@ -18,8 +18,8 @@ export const TotalCourses = () => {
     <Card className="pt-6">
       <div className="flex items-center justify-between">
         <LabledIcon>
-          <CoursesIcon />
-          Total courses
+          <UsersIcon />
+          Total students
         </LabledIcon>
         <span className="font-[Lato] font-bold text-[24px] text-dark-text">{data?.data}</span>
       </div>

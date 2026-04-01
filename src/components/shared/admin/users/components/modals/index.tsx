@@ -121,7 +121,9 @@ export default function UserModal() {
         : schoolIdValue === "" || schoolIdValue === undefined
           ? null
           : Number(schoolIdValue),
-      birthday: new Date(formData.birthday).toISOString().split("T")[0],
+      birthday: formData.birthday
+        ? new Date(formData.birthday).toISOString().split("T")[0]
+        : undefined,
     };
 
     if (isEdit && userId) {

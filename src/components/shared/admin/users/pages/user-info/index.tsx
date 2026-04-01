@@ -6,27 +6,33 @@ import { Spinner } from "components/ui/spinner";
 import UserInformation from "./components/ui/information";
 import UserCourses from "./components/ui/courses";
 import UserActivity from "./components/ui/activity";
+import UserModal from "components/shared/admin/users/components/modals";
+import DeleteUsersModal from "components/shared/admin/users/components/modals/delete";
 
 export default function AdminUsersInfo() {
   const { userId } = useParams<{ userId: string }>();
   const id = Number(userId);
 
-  if (!userId || !Number.isFinite(id)) {
+  const { data: user, isLoading } = useGetUserById(Number.isFinite(id) && id > 0 ? id : 0);
+
+  if (!userId || !Number.isFinite(id) || id <= 0) {
     return (
       <AdminLayout title="Invalid user">
+        <UserModal />
+        <DeleteUsersModal />
         <Text>Invalid user id</Text>
       </AdminLayout>
     );
   }
 
-  const { data: user, isLoading } = useGetUserById(id);
-
   if (isLoading) {
     return (
-        <AdminLayout>
-            <Spinner isLoading={isLoading} />
-        </AdminLayout>
-    )
+      <AdminLayout>
+        <UserModal />
+        <DeleteUsersModal />
+        <Spinner isLoading={isLoading} />
+      </AdminLayout>
+    );
   }
 
   if (!user) {
@@ -35,6 +41,8 @@ export default function AdminUsersInfo() {
 
   return (
     <AdminLayout title={`${user.data.first_name} ${user.data.last_name}`}>
+      <UserModal />
+      <DeleteUsersModal />
       <VStack spacing="24px" align="stretch">
         <UserInformation />
         <HStack h={'100%'}>

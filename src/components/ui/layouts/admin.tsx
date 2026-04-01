@@ -17,6 +17,9 @@ import BackIcon from "assets/imgs/admin/back.svg?react";
 import Edit from "assets/imgs/admin/edit.svg?react";
 import Delete from "assets/imgs/admin/trash.svg?react";
 import { useCreateModal } from "hooks/admin/useCreateModal";
+import { useModalStore } from "stores/modalStore";
+import { useGetUserById } from "api/admin/users/hooks";
+import { useParams } from "react-router-dom";
 
 
 type Props = {
@@ -28,6 +31,11 @@ export const AdminLayout = ({ children, title }: PropsWithChildren<Props>) => {
 
   const { pathname } = useLocation();
   const ModalOpen = useCreateModal(pathname);
+
+  const openModal = useModalStore((state) => state.openModal);
+  const { userId } = useParams<{ userId: string }>();
+  const { data: userById } = useGetUserById(Number(userId) || 0);
+  const user = userById?.data;
 
   const finalTitle = title || pageTitle;
 
@@ -133,6 +141,7 @@ export const AdminLayout = ({ children, title }: PropsWithChildren<Props>) => {
             bg="white"
             _hover={{ bgColor: "white" }}
             borderColor="#B4D6DF"
+            onClick={() => user && openModal("EDIT_USER", { id: user.id, data: user })}
           >
             <Box>
               <Edit width={'20px'} height={'20px'}/>
@@ -147,6 +156,7 @@ export const AdminLayout = ({ children, title }: PropsWithChildren<Props>) => {
             bg="#FFEFEF"
             borderColor="#FFB7B7"
             _hover={{ bgColor: "#FFEFEF" }}
+            onClick={() => user && openModal("DELETE_USER", { id: user.id, data: user })}
           >
             <Box>
               <Delete width={'20px'} height={'20px'}/>

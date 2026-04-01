@@ -37,9 +37,10 @@ import { matchPath } from "react-router-dom";
 
 type Props = {
   title?: string;
+  hideTitle?: boolean;
 };
 
-export function UserBox({children} : PropsWithChildren<Props>) {
+export function UserBox({children, hideTitle} : PropsWithChildren<Props>) {
   // const { t } = useTranslation();
   const { pageTitle } = useTitleByPathname();
   const { pathname } = useLocation();
@@ -59,11 +60,13 @@ export function UserBox({children} : PropsWithChildren<Props>) {
       borderRadius="10px"
       className="lms-box min-w-60 md:min-w-6xl"
       >
-      <HStack align={'flex-start'} width={'100%'}>
-        <Text fontSize={'32px'} fontFamily={'Lato'}> 
-          {!isStudentCoursePage ? pageTitle : "Student courses"}
+      {!hideTitle && (
+        <HStack align={'flex-start'} width={'100%'}>
+          <Text fontSize={'32px'} fontFamily={'Lato'}> 
+            {!isStudentCoursePage ? pageTitle : "Student courses"}
           </Text>
-      </HStack>
+        </HStack>
+      )}
       {children}
     </Box>
   );

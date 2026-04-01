@@ -64,7 +64,7 @@ if (isLoading) {
                   <Text
                     fontSize="16px"
                     fontWeight="500"
-                    minW={0}
+                    maxW={"600px"}
                     isTruncated
                   >
                     {course.name}
@@ -75,7 +75,7 @@ if (isLoading) {
                     minW={0}
                     isTruncated
                   >
-                    {course.progress ?? "-"}
+                    {course.progress ?? "-"}%
                   </Text>
                 </HStack>
               </Box>

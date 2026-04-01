@@ -4,6 +4,7 @@ import {
   getActiveSubscriptions,
   getMostPopularCourse,
   getNewUsers,
+  getTotalStudents
 } from "./index";
 
 export const useTotalCourses = () => {
@@ -31,5 +32,13 @@ export const useNewUsers = (months: number) => {
   return useQuery({
     queryKey: ['dashboard-new-users', months],
     queryFn: () => getNewUsers(months),
+  });
+};
+
+
+export const useTotalStudents = () => {
+  return useQuery({
+    queryKey: ['dashboard-total-students'],
+    queryFn: getTotalStudents,
   });
 };

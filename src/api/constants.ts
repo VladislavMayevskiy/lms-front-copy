@@ -31,7 +31,8 @@ export const AdminApiRoutes = {
   assignedCourses: (userId: number) => `${ApiBaseAdmin}/users/${userId}/courses`,
   subscription: (schoolId: number) => `${ApiBaseAdmin}/schools/${schoolId}/subscription`,
   billing: (schoolId: number) => `${ApiBaseAdmin}/schools/${schoolId}/billing`,
-  invoice: (schoolId: number) => `${ApiBaseAdmin}/schools/${schoolId}/invoices`
+  invoice: (schoolId: number) => `${ApiBaseAdmin}/schools/${schoolId}/invoices`,
+  totalStudents: `${ApiBaseAdminDashboard}/total-students`
 };
 
 export const AdminLanguagesApiRoutes = {

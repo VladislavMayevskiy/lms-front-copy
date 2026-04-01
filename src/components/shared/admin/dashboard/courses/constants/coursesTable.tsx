@@ -12,13 +12,6 @@ export const columns = [
     },
     cell: (info) => info.getValue(),
   }),
-  columnHelper.accessor("type", {
-    header: "Course Type",
-    meta: {
-      className: "w-[20%]",
-    },
-    cell: (info) => info.getValue(),
-  }),
   columnHelper.accessor("schoolsCount", {
     header: "Assigned Schools",
     meta: {

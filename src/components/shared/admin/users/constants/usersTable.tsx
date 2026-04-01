@@ -7,7 +7,7 @@ import { HStack, Text, Button ,Box} from "@chakra-ui/react";
 import { useModalStore   } from "stores/modalStore";
 import { RolesByNumber } from "constants/roles";
 import { NavLink } from "react-router-dom";
-import { SchoolAdminRoutes } from "constants/routes";
+import { AdminRoutes } from "constants/routes";
 const columnHelper = createColumnHelper<ApiUsersType>();
 
 
@@ -79,7 +79,7 @@ export const UsersColumns = [
 
           <Button
             as={NavLink}
-            to={`${SchoolAdminRoutes.users}/${user.id}`}
+            to={`${AdminRoutes.users}/${user.id}`}
             w="40px"
             h="40px"
             borderRadius="6px"

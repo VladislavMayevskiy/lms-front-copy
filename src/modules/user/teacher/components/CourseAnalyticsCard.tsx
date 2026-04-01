@@ -51,11 +51,15 @@ export default function CourseAnalyticsCard({ courseId }: Props) {
     const totalQuestions = questions.length;
     if (totalQuestions === 0) return null;
 
-    const avgAccuracy =
-      (questions.reduce((sum, q) => sum + q.accuracy, 0) / totalQuestions) * 100;
 
-    const passingQuestions = questions.filter(
-      (q) => q.accuracy * 100 >= RISK_THRESHOLDS.HIGH,
+    const questionAccuracies = questions.map((q) =>
+      q.total_answers > 0 ? (q.correct_answers / q.total_answers) * 100 : 0,
+    );
+    const avgAccuracy =
+      questionAccuracies.reduce((sum, a) => sum + a, 0) / totalQuestions;
+
+    const passingQuestions = questionAccuracies.filter(
+      (a) => a >= RISK_THRESHOLDS.HIGH,
     ).length;
     const passRate = Math.round((passingQuestions / totalQuestions) * 100);
 
