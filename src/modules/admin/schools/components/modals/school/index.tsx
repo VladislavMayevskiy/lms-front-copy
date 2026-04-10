@@ -72,6 +72,7 @@ export default function SchoolModal() {
     resolver: zodResolver(schoolSchema),
     mode: "onChange",
     defaultValues: {
+      title: "",
       name: "",
       phone: "",
       email: "",
@@ -119,6 +120,7 @@ export default function SchoolModal() {
   const resetToDefaults = (districtId?: number | null) => {
     reset({
       district_id: districtId ?? 0,
+      title: "",
       name: "",
       phone: "",
       email: "",
@@ -157,6 +159,7 @@ export default function SchoolModal() {
     if (isEdit && schoolData) {
       reset({
         district_id: schoolData.district?.id ?? 0,
+        title: schoolData.title ?? "",
         name: schoolData.name ?? "",
         phone: schoolData.phone ?? "",
         email: schoolData.email ?? "",

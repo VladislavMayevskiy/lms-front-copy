@@ -21,7 +21,9 @@ export default function AdminHeader() {
   return (
     <HStack justify={"space-between"} px="60px" py="20px" bg="white" maxH={'120px'}>
       <HStack spacing="20px">
-        <Logo />
+        <HStack spacing="10px">
+          <Logo />
+        </HStack>
         {tabs[role].map((tab) => (
           <NavLink
             key={tab.path}

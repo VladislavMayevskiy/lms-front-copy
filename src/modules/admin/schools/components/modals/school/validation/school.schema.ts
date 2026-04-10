@@ -5,6 +5,8 @@ import { SubscriptionType } from "types/admin/subscription/types";
 const baseSchoolSchema = z.object({
   district_id: z.number().optional(),
 
+  title: z.string().trim().optional(),
+
   name: z.string().trim().min(1, "Fill in the required field"),
   phone: z.string().trim().min(1, "Fill in the required field"),
   email: z.string().trim().email("Fill in the required field"),

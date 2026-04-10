@@ -23,6 +23,7 @@ export const schoolCreateToFormData = (
 
   const keys: Array<keyof CreateSchoolSchema> = [
     "district_id",
+    "title",
     "name",
     "phone",
     "email",
@@ -63,6 +64,8 @@ export const schoolUpdateToFormData = (
   const formData = new FormData();
 
   const keys: Array<keyof UpdateSchoolSchema> = [
+    "district_id",
+    "title",
     "name",
     "phone",
     "email",
@@ -75,6 +78,12 @@ export const schoolUpdateToFormData = (
 
   keys.forEach((key) => {
     const value = school[key];
+
+    if (key === "district_id") {
+      if (value === undefined || value === null || value === 0) return;
+      formData.append("district_id", String(value));
+      return;
+    }
 
     if (key === "logo") {
       if (value instanceof File) {

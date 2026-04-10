@@ -34,9 +34,12 @@ export const useUpdateSchool = () => {
   return useMutation({
     mutationKey: ["schools-edit"],
     mutationFn: updateSchool,
-    onSuccess: () => {
+    onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: ["schools-list"] });
       queryClient.invalidateQueries({ queryKey: ["get-district"] });
+      if (variables?.id) {
+        queryClient.invalidateQueries({ queryKey: ["school", variables.id] });
+      }
     },
   });
 };
