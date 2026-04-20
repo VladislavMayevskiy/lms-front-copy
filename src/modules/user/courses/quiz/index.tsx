@@ -138,12 +138,19 @@ export default function UnitQuizContent({
                       h="26px"
                       borderRadius="full"
                       border="2px solid"
-                      borderColor={isSelected ? "#0070C1" : "#C9E1EA"}
+                      borderColor={isSelected ? "var(--brand-primary, #0070C1)" : "#C9E1EA"}
                       display="flex"
                       alignItems="center"
                       justifyContent="center"
                     >
-                      {isSelected && <Box w="14px" h="14px" borderRadius="full" bg="#0070C1" />}
+                      {isSelected && (
+                        <Box
+                          w="14px"
+                          h="14px"
+                          borderRadius="full"
+                          bg="var(--brand-primary, #0070C1)"
+                        />
+                      )}
                     </Box>
 
                     <Text fontSize="18px" fontFamily="Lato" fontWeight="medium">
@@ -159,14 +166,14 @@ export default function UnitQuizContent({
 
       <Button
         mt={10}
-        bg="#0070C1"
+        bg="var(--brand-primary, #0070C1)"
         color="white"
         borderRadius="10px"
         fontWeight="bold"
         isDisabled={!canSubmit}
         isLoading={isPending}
         onClick={onSubmit}
-        _hover={{ bgColor: "#0070C1" }}
+        _hover={{ bgColor: "var(--brand-primary, #0070C1)" }}
       >
         {t("user.courses.learn.sendAnswers")}
       </Button>

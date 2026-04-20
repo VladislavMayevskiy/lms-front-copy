@@ -81,7 +81,11 @@ export default function SectionRenderer({ section }: { section: UiUnitSection })
           <Text fontFamily="Lato" mb={1}>
             {section.files?.[0]?.name ?? "Document"}
           </Text>
-          <Link href={section.files?.[0]?.url} isExternal color="#0070C1">
+          <Link
+            href={section.files?.[0]?.url}
+            isExternal
+            color="var(--brand-primary, #0070C1)"
+          >
             {t("user.courses.render.openDocument")}
           </Link>
         </SectionShell>

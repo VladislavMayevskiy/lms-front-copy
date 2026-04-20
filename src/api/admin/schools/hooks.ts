@@ -39,6 +39,9 @@ export const useUpdateSchool = () => {
       queryClient.invalidateQueries({ queryKey: ["get-district"] });
       if (variables?.id) {
         queryClient.invalidateQueries({ queryKey: ["school", variables.id] });
+        queryClient.invalidateQueries({
+          queryKey: ["school-branding", variables.id],
+        });
       }
     },
   });

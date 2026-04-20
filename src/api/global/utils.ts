@@ -6,6 +6,7 @@ export const mapFromUser = (user: ApiUserType): UserType => {
   return {
     ...user,
     role: RolesByNumber[user.role],
-    school_id: user.school_id ?? 0,
+    // Preserve null — coercing to 0 breaks school branding (Boolean(0) is false).
+    school_id: user.school_id ?? null,
   };
 };

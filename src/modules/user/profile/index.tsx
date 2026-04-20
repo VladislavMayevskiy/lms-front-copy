@@ -18,7 +18,6 @@ import UnfinishCoursesIcon from "assets/imgs/user/heroicons-outline/unfinished.s
 import HoursIcon from "assets/imgs/user/heroicons-outline/clock.svg?react";
 import JoinedIcon from "assets/imgs/user/heroicons-outline/cake.svg?react";
 import MenImage from "assets/imgs/men.png";
-
 import { useForm, Controller } from "react-hook-form";
 import { useCurrentUserQuery, useUpdateCurrentUser } from "api/global/hooks";
 import { useEffect, useCallback, useState } from "react";
@@ -38,6 +37,7 @@ import type { ProfileFormValues } from "types/user/Profile";
 
 import { profileSchema } from "./validation/profile.validation.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useUserAvatarSrc } from "hooks/useUserAvatarSrc";
 
 function Profile() {
   const navigate = useNavigate();
@@ -45,8 +45,9 @@ function Profile() {
 
   const { data } = useCurrentUserQuery();
   
-  const [imgCacheBust, setImgCacheBust] = useState(1);
+  const [imgCacheBust, setImgCacheBust] = useState(0);
   const handleImageUpdated = useCallback(() => setImgCacheBust((v) => v + 1), []);
+  const { src: avatarSrc, key: avatarKey } = useUserAvatarSrc(imgCacheBust);
   const { mutate: updateUser, isPending: isSavingProfile } = useUpdateCurrentUser();
   const { mutate: changePassword, isPending: isChangingPassword } = useUpdatePasswordUser();
   const { data: activity } = useGetActivity();
@@ -188,18 +189,12 @@ const onChangePassword = handleSubmit(async (values) => {
 
               <HStack mb="40px" className="w-full" spacing={5}>
                 <Image
+                  key={avatarKey}
                   width="100px"
                   height="100px"
                   alt="Avatar"
                   borderRadius="99px"
-                  fallbackSrc={MenImage}
-                  src={
-                    data?.image
-                      ? (data.image.includes("?")
-                          ? `${data.image}&_v=${imgCacheBust}`
-                          : `${data.image}?_v=${imgCacheBust}`)
-                      : MenImage
-                  }
+                  src={avatarSrc}
                   onError={(e) => {
                     (e.target as HTMLImageElement).src = MenImage;
                   }}
@@ -207,9 +202,9 @@ const onChangePassword = handleSubmit(async (values) => {
 
                 <Box className="flex md:flex-row flex-col gap-3.5 w-full">
                   <Button
-                    _hover={{ bgColor: "#0070C1" }}
+                    _hover={{ bgColor: "var(--brand-primary, #0070C1)" }}
                     borderRadius="10px"
-                    bgColor="#0070C1"
+                    bgColor="var(--brand-primary, #0070C1)"
                     textColor="white"
                     px="24px"
                     py="10px"
@@ -217,7 +212,7 @@ const onChangePassword = handleSubmit(async (values) => {
                     className="md:max-w-[320px]"
                     height="44px"
                     borderWidth="1px"
-                    borderColor="#0070C1"
+                    borderColor="var(--brand-primary, #0070C1)"
                     onClick={() => openModal("UPDATE_IMAGE_USER")}
                   >
                     {t("user.profile.changePicture")}
@@ -305,16 +300,16 @@ const onChangePassword = handleSubmit(async (values) => {
 
               <Button
                 mb="40px"
-                _hover={{ bgColor: "#0070C1" }}
+                _hover={{ bgColor: "var(--brand-primary, #0070C1)" }}
                 borderRadius="10px"
-                bgColor="#0070C1"
+                bgColor="var(--brand-primary, #0070C1)"
                 textColor="white"
                 px="24px"
                 py="10px"
                 width="82px"
                 height="44px"
                 onClick={onSave}
-                borderColor="#0070C1"
+                borderColor="var(--brand-primary, #0070C1)"
                 borderWidth="1px"
                 isLoading={isSavingProfile}
                 isDisabled={!isValid || isSavingProfile || isChangingPassword}
@@ -415,15 +410,15 @@ const onChangePassword = handleSubmit(async (values) => {
               <Button
                 type="button"
                 mb="40px"
-                _hover={{ bgColor: "#0070C1" }}
+                _hover={{ bgColor: "var(--brand-primary, #0070C1)" }}
                 borderRadius="10px"
-                bgColor="#0070C1"
+                bgColor="var(--brand-primary, #0070C1)"
                 textColor="white"
                 px="24px"
                 py="10px"
                 width="175px"
                 height="44px"
-                borderColor="#0070C1"
+                borderColor="var(--brand-primary, #0070C1)"
                 borderWidth="1px"
                 onClick={onChangePassword}
                 isLoading={isChangingPassword}

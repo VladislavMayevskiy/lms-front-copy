@@ -86,6 +86,5 @@ export const UserApiRoutes = {
   quizAnalyticsUnit: (unitId: number) => `${ApiBase}/teacher/units/${unitId}/quiz-analytics`,
   teacherStudents: `${ApiBase}/teacher/students`,
   teacherStudentCourses: (userId: number) => `${ApiBase}/teacher/students/${userId}/courses`,
-  teacherStudentCourseQuizResults: (userId: number, courseId: number) =>
-    `${ApiBase}/teacher/students/${userId}/courses/${courseId}/quiz-results`,
+  teacherStudentCourseQuizResults: (userId: number, courseId: number) => `${ApiBase}/teacher/students/${userId}/courses/${courseId}/quiz-results`,
 };

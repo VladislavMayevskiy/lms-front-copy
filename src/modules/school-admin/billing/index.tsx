@@ -194,7 +194,7 @@ function AdminBilling() {
                       borderRadius="6px"
                       px="12px"
                       py="4px"
-                      bgColor={"#0070C1"}
+                      bgColor={"var(--brand-primary, #0070C1)"}
                     >
                       {subscriptionTypeLabel}
                     </Box>
@@ -265,9 +265,10 @@ function AdminBilling() {
                 h="44px"
                 px="24px"
                 borderRadius="10px"
-                bgColor="#0070C1"
+                bgColor="var(--brand-primary, #0070C1)"
+                _hover={{ bgColor: "var(--brand-primary, #0070C1)" }}
                 textColor="white"
-                borderColor="#0070C1"
+                borderColor="var(--brand-primary, #0070C1)"
                 onClick={() => openModal("ACTIVATE_SUBSCRIPTION", { schoolId })}
               >
                 {t("user.billing.activate", "Activate")}
@@ -312,7 +313,7 @@ function AdminBilling() {
                       borderRadius="6px"
                       px="12px"
                       py="4px"
-                      bgColor={"#0070C1"}
+                      bgColor={"var(--brand-primary, #0070C1)"}
                     >
                       {subscriptionTypeLabel}
                     </Box>

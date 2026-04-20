@@ -86,7 +86,7 @@ export const SelectMultipleField = <T extends { id: number | string; name: strin
             <Text
               fontFamily="Lato"
               fontSize="14px"
-              color={error ? "#F23B3B" : "#0070C1"}
+              color={error ? "#F23B3B" : "var(--brand-primary, #0070C1)"}
               py="4px"
             >
               {placeholder}

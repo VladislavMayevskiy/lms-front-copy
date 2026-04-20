@@ -37,8 +37,8 @@ function UnitStudentRow({ student }: { student: AtRiskStudent }) {
             size="sm"
             name={student.name}
             src={student.image ?? undefined}
-            bg="#DDECF7"
-            color="#0070C1"
+            bg="var(--brand-secondary, #DDECF7)"
+            color="var(--brand-primary, #0070C1)"
           />
           <Text fontFamily="Lato" fontSize="14px" isTruncated>
             {student.name}
@@ -226,7 +226,7 @@ export default function UnitAnalyticsBlock({ courseId }: Props) {
 
       {!isDataLoading && !isError && studentRows.length > 0 && !!selectedUnitId && (
         <>
-          <Box mb={2} height="44px" bgColor="#DDECF7" borderRadius="8px">
+          <Box mb={2} height="44px" bgColor="var(--brand-secondary, #DDECF7)" borderRadius="8px">
             <HStack px="20px" height="full">
               <Text flex={2} fontFamily="Lato" fontSize="14px" color="#434645" fontWeight="medium">
                 Student

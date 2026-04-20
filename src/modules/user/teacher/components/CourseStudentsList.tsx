@@ -102,7 +102,13 @@ export default function CourseStudentsList() {
 
       {!isLoading && !isError && students.length > 0 && (
         <>
-          <Box mb={2} width="full" height="48px" bgColor="#DDECF7" borderRadius="8px">
+          <Box
+            mb={2}
+            width="full"
+            height="48px"
+            bgColor="var(--brand-secondary, #DDECF7)"
+            borderRadius="8px"
+          >
             <HStack px="20px" height="full">
               <Text flex={2} fontFamily="Lato" fontSize="14px" color="#434645" fontWeight="medium">
                 Student
@@ -135,8 +141,8 @@ export default function CourseStudentsList() {
                       size="sm"
                       name={fullName(student)}
                       src={student.image ?? undefined}
-                      bg="#DDECF7"
-                      color="#0070C1"
+                      bg="var(--brand-secondary, #DDECF7)"
+                      color="var(--brand-primary, #0070C1)"
                     />
                     <Text fontFamily="Lato" fontSize="14px" isTruncated>
                       {fullName(student)}
@@ -166,13 +172,13 @@ export default function CourseStudentsList() {
                   <Button
                     size="sm"
                     variant="outline"
-                    borderColor="#0070C1"
-                    color="#0070C1"
+                    borderColor="var(--brand-primary, #0070C1)"
+                    color="var(--brand-primary, #0070C1)"
                     fontFamily="Lato"
                     fontSize="13px"
                     borderRadius="6px"
                     w="110px"
-                    _hover={{ bg: "#DDECF7" }}
+                    _hover={{ bg: "var(--brand-secondary, #DDECF7)" }}
                     onClick={() =>
                       navigate(
                         UserRoutes.studentCourse.replace(

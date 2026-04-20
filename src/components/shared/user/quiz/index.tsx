@@ -189,7 +189,7 @@ export default function StudentQuizResultContent({
                   fontWeight="semibold"
                   fontSize="18px"
                   mb={4}
-                  color="#0070C1"
+                  color="var(--brand-primary, #0070C1)"
                   noOfLines={2}
                 >
                   {unitLabel}
@@ -197,12 +197,17 @@ export default function StudentQuizResultContent({
 
                 <Box
                   p={4}
-                  bg="rgba(0, 112, 193, 0.07)"
+                  bg="var(--brand-secondary, #DDECF7)"
                   border="1px solid #B4D6DF"
                   borderRadius="12px"
                   mb={5}
                 >
-                  <Text fontFamily="Lato" fontWeight="bold" fontSize="20px" color="#0070C1">
+                  <Text
+                    fontFamily="Lato"
+                    fontWeight="bold"
+                    fontSize="20px"
+                    color="var(--brand-primary, #0070C1)"
+                  >
                     {t("user.courses.learn.totalScore", "Total score")}: {attempt.score}/100
                   </Text>
                   <Text fontFamily="Lato" color="#434645" fontSize="14px" mt={1}>

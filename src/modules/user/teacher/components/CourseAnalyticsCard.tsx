@@ -12,7 +12,7 @@ import { RISK_THRESHOLDS } from "../utils/atRisk";
 function StatCard({
   label,
   value,
-  color = "#0070C1",
+  color = "var(--brand-primary, #0070C1)",
 }: {
   label: string;
   value: string | number;

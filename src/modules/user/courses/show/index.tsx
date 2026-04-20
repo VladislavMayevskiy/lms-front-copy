@@ -103,18 +103,18 @@ const [openModule, setOpenModule] = useState<number | null>(null);
           </Box>
     {user?.is_subscribed === true ? (
           <Button
-            bg="#0070C1"
+            bg="var(--brand-primary, #0070C1)"
             textColor={"white"}
             borderRadius="10px"
             px={6}
             py={3}
             mb={6}
-            _hover={{ bg: "#005A9E" }}
+            _hover={{ bg: "var(--brand-primary, #0070C1)" }}
             width={"134px"}
             height={"44px"}
             onClick={onSubmit}
             borderWidth={'1px'}
-            borderColor={'#0070C1'}
+            borderColor={'var(--brand-primary, #0070C1)'}
             isLoading={isPending}
           >
             {t("user.courses.learn.startCourse")}

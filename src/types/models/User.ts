@@ -12,7 +12,7 @@ export type UserType = {
   birthday: string;
   role: UserRoleType;
   phone: string;
-  school_id: number;
+  school_id: number | null;
   course_reminders: boolean;
   announcements: boolean;
   assignment_feedback: boolean;

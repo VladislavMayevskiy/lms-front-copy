@@ -379,4 +379,4 @@ body[data-theme="dark"] .lms-border-white {
 
 .ql-editor p { margin: 0.5em 0; }
 .ql-editor ul, .ql-editor ol { padding-left: 1.5em; margin: 0.5em 0; }
-.ql-editor a { color: #0070C1; text-decoration: underline; }
+.ql-editor a { color: var(--accent-main, #0070C1); text-decoration: underline; }

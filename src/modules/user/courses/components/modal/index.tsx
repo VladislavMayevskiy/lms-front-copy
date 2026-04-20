@@ -29,7 +29,7 @@ const stripeElementOptions = {
       fontSize: "14px",
       fontFamily: "Lato, sans-serif",
       color: "#434645",
-      "::placeholder": { color: "#0070C1" },
+      "::placeholder": { color: "var(--brand-primary, #0070C1)" },
     },
   },
 };
@@ -169,7 +169,7 @@ function PurchaseCourseModalContent({
           </StripeField>
 
           <StripeField label={t("general.labels.cardHolder")}>
-            <Text fontFamily="Lato" fontSize="14px" color="#0070C1">
+            <Text fontFamily="Lato" fontSize="14px" color="var(--brand-primary, #0070C1)">
               {t("general.placeholders.notRequired")}
             </Text>
           </StripeField>
@@ -223,7 +223,8 @@ function PurchaseCourseModalContent({
             h="48px"
             borderRadius="10px"
             fontFamily="Lato"
-            bg="#0070C1"
+            bg="var(--brand-primary, #0070C1)"
+            _hover={{ bg: "var(--brand-primary, #0070C1)" }}
             color="white"
             isLoading={isPending}
             loadingText={t("general.purchasing")}

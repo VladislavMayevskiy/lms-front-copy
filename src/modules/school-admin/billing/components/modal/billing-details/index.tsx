@@ -75,7 +75,9 @@ function EditBillingDetailModalContent() {
     },
   });
 
-  const { mutateAsync: updateSubscription, isPending } = useUpdateSchoolSubscription(schoolId);
+  const { mutateAsync: updateSubscription, isPending } = useUpdateSchoolSubscription(
+    schoolId ?? 0
+  );
 
   const getErrorMessage = (err: unknown) => {
     const anyErr = err as any;
@@ -153,7 +155,7 @@ function EditBillingDetailModalContent() {
                   className="w-full md:w-[300px]"
                   bgColor="#F5F7F9"
                   borderColor="#B4D6DF"
-                  _placeholder={{ color: "#0070C1" }}
+                  _placeholder={{ color: "var(--brand-primary, #0070C1)" }}
                 />
               </VStack>
             )}
@@ -179,7 +181,7 @@ function EditBillingDetailModalContent() {
                   className="w-full md:w-[300px]"
                   bgColor="#F5F7F9"
                   borderColor="#B4D6DF"
-                  _placeholder={{ color: "#0070C1" }}
+                  _placeholder={{ color: "var(--brand-primary, #0070C1)" }}
                 />
               </VStack>
             )}
@@ -211,7 +213,7 @@ function EditBillingDetailModalContent() {
                   className="w-full md:w-[300px]"
                   bgColor="#F5F7F9"
                   borderColor="#B4D6DF"
-                  _placeholder={{ color: "#0070C1" }}
+                  _placeholder={{ color: "var(--brand-primary, #0070C1)" }}
                 />
               </VStack>
             )}
@@ -237,7 +239,7 @@ function EditBillingDetailModalContent() {
                   className="w-full md:w-[300px]"
                   bgColor="#F5F7F9"
                   borderColor="#B4D6DF"
-                  _placeholder={{ color: "#0070C1" }}
+                  _placeholder={{ color: "var(--brand-primary, #0070C1)" }}
                 />
               </VStack>
             )}
@@ -265,7 +267,7 @@ function EditBillingDetailModalContent() {
                   className="w-full md:w-[300px]"
                   bgColor="#F5F7F9"
                   borderColor="#B4D6DF"
-                  _placeholder={{ color: "#0070C1" }}
+                  _placeholder={{ color: "var(--brand-primary, #0070C1)" }}
                 />
               </VStack>
             )}
@@ -291,7 +293,7 @@ function EditBillingDetailModalContent() {
                   className="w-full md:w-[300px]"
                   bgColor="#F5F7F9"
                   borderColor="#B4D6DF"
-                  _placeholder={{ color: "#0070C1" }}
+                  _placeholder={{ color: "var(--brand-primary, #0070C1)" }}
                 />
               </VStack>
             )}
@@ -316,7 +318,7 @@ function EditBillingDetailModalContent() {
                   fontSize: "14px",
                   fontFamily: "Lato, sans-serif",
                   color: "#100B20",
-                  "::placeholder": { color: "#0070C1" },
+                  "::placeholder": { color: "var(--brand-primary, #0070C1)" },
                 },
               },
             }}
@@ -344,7 +346,8 @@ function EditBillingDetailModalContent() {
             h="48px"
             borderRadius="10px"
             fontFamily="Lato"
-            bg="#0070C1"
+            bg="var(--brand-primary, #0070C1)"
+            _hover={{ bg: "var(--brand-primary, #0070C1)" }}
             color="white"
             isLoading={isPending}
             loadingText={t("general.saving")}

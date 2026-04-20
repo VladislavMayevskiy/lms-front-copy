@@ -121,8 +121,8 @@ export const AdminLayout = ({ children, title }: PropsWithChildren<Props>) => {
   <Button
     onClick={ModalOpen}
     borderRadius="10px"
-    bgColor="#0070C1"
-    _hover={{ bgColor: "#0070C1" }}
+    bgColor="var(--brand-primary, #0070C1)"
+    _hover={{ bgColor: "var(--brand-primary, #0070C1)" }}
     textColor="white"
     width="179px"
     height="44px"

@@ -5,8 +5,23 @@ import { authStore } from "stores/authStore";
 import { useCurrentUserQuery } from "api/global/hooks";
 import { localStore } from "stores/localStore";
 import { isRtlLanguage } from "constants/languages";
+import { getSchool } from "api/user/school";
+import { schoolBrandingQueryKey } from "branding/schoolBranding";
+import type { UserType } from "types/models/User";
 
 import type { LanguageEnumsType } from "types/general";
+
+function shouldPrefetchSchoolBranding(user: UserType) {
+  const sid = user.school_id;
+  if (typeof sid !== "number" || sid <= 0) return false;
+  const r = user.role;
+  return (
+    r === "SchoolAdmin" ||
+    r === "SchoolCourseProvider" ||
+    r === "Teacher" ||
+    r === "Student"
+  );
+}
 
 export const useLoadCurrentUser = () => {
   const queryClient = useQueryClient();
@@ -23,8 +38,16 @@ export const useLoadCurrentUser = () => {
       setUser(data);
       setDirection(isRtlLanguage(data.language) ? "rtl" : "ltr");
       setLanguage(data.language as LanguageEnumsType);
+
+      if (shouldPrefetchSchoolBranding(data)) {
+        const sid = data.school_id as number;
+        void queryClient.prefetchQuery({
+          queryKey: schoolBrandingQueryKey(sid),
+          queryFn: () => getSchool(sid),
+        });
+      }
     }
-  }, [data]);
+  }, [data, queryClient, setDirection, setLanguage, setUser]);
 
   useEffect(() => {
     if (!token) {

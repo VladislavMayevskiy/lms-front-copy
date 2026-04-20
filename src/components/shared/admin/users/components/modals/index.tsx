@@ -202,7 +202,7 @@ export default function UserModal() {
                       borderWidth={"1px"}
                       borderColor={"#B4D6DF"}
                       borderRadius={"10px"}
-                      _placeholder={{ color: "#0070C1" }}
+                      _placeholder={{ color: "var(--brand-primary, #0070C1)" }}
                     />
                   </VStack>
                 )}
@@ -227,7 +227,7 @@ export default function UserModal() {
                       borderRadius={"10px"}
                       borderColor="#B4D6DF"
                       borderWidth="1px"
-                      _placeholder={{ color: "#0070C1" }}
+                      _placeholder={{ color: "var(--brand-primary, #0070C1)" }}
                     />
                   </VStack>
                 )}
@@ -243,7 +243,7 @@ export default function UserModal() {
                     </Text>
                     <Select
                       isDisabled={isSuperRole}
-                      textColor={"#0070C1"}
+                      textColor={"var(--brand-primary, #0070C1)"}
                       {...field}
                       value={(field.value as any) ?? ""}
                       h="44px"
@@ -276,7 +276,7 @@ export default function UserModal() {
                       Gender*
                     </Text>
                     <Select
-                      textColor={"#0070C1"}
+                      textColor={"var(--brand-primary, #0070C1)"}
                       {...field}
                       h="44px"
                       bg="#F5F7F9"
@@ -314,7 +314,7 @@ export default function UserModal() {
                           borderRadius="10px"
                           borderColor="#B4D6DF"
                           borderWidth="1px"
-                          _placeholder={{ color: "#0070C1" }}
+                          _placeholder={{ color: "var(--brand-primary, #0070C1)" }}
                         />
                         <InputRightElement
                           mt={"2px"}
@@ -348,7 +348,7 @@ export default function UserModal() {
                       borderRadius="10px"
                       borderColor="#B4D6DF"
                       borderWidth="1px"
-                      _placeholder={{ color: "#0070C1" }}
+                      _placeholder={{ color: "var(--brand-primary, #0070C1)" }}
                     />
                   </VStack>
                 )}
@@ -372,7 +372,7 @@ export default function UserModal() {
                       borderRadius="10px"
                       borderColor="#B4D6DF"
                       borderWidth="1px"
-                      _placeholder={{ color: "#0070C1" }}
+                      _placeholder={{ color: "var(--brand-primary, #0070C1)" }}
                     />
                   </VStack>
                 )}
@@ -387,7 +387,7 @@ export default function UserModal() {
                       Birthday*
                     </Text>
                     <Input
-                      textColor={"#0070C1"}
+                      textColor={"var(--brand-primary, #0070C1)"}
                       placeholder="Select date"
                       {...field}
                       type="date"
@@ -423,7 +423,7 @@ export default function UserModal() {
                           borderRadius="10px"
                           borderColor="#B4D6DF"
                           borderWidth="1px"
-                          _placeholder={{ color: "#0070C1" }}
+                          _placeholder={{ color: "var(--brand-primary, #0070C1)" }}
                         />
                         <InputRightElement
                           mt={"2px"}
@@ -450,7 +450,7 @@ export default function UserModal() {
                 name="role"
                 render={({ field }) => (
                   <Select
-                    textColor={"#0070C1"}
+                    textColor={"var(--brand-primary, #0070C1)"}
                     {...field}
                     h="44px"
                     bg="#F5F7F9"
@@ -495,7 +495,7 @@ export default function UserModal() {
                   h="48px"
                   borderRadius="10px"
                   fontFamily="Lato"
-                  bg="#0070C1"
+                  bg="var(--brand-primary, #0070C1)"
                   color="white"
                   isLoading={isEditing}
                   cursor={isValid ? "pointer" : "not-allowed"}
@@ -512,7 +512,7 @@ export default function UserModal() {
                 h="48px"
                 borderRadius="10px"
                 fontFamily="Lato"
-                bg="#0070C1"
+                bg="var(--brand-primary, #0070C1)"
                 cursor={isValid ? "pointer" : "not-allowed"}
                 isDisabled={!isValid || isPending}
                 isLoading={isPending}

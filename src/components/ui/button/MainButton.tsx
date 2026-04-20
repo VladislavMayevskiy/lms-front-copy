@@ -2,10 +2,41 @@ import classNames from "classnames";
 import { Button } from "@chakra-ui/react";
 import type { ButtonProps } from "@chakra-ui/react";
 
-export const MainButton = ({ disabled, className, colorScheme = "blue", ...props }: ButtonProps) => {
+const BRAND_PRIMARY = "var(--brand-primary, #0070C1)";
+
+export const MainButton = ({
+  disabled,
+  className,
+  colorScheme,
+  variant = "solid",
+  ...props
+}: ButtonProps) => {
+  const shouldUseBrandedDefaults = colorScheme == null;
+
+  const brandedVariantProps: Partial<ButtonProps> = shouldUseBrandedDefaults
+    ? variant === "outline"
+      ? {
+          borderColor: BRAND_PRIMARY,
+          color: BRAND_PRIMARY,
+          _hover: { bg: "var(--brand-secondary, #DDECF7)" },
+        }
+      : variant === "ghost"
+        ? {
+            color: BRAND_PRIMARY,
+            _hover: { bg: "var(--brand-secondary, #DDECF7)" },
+          }
+        : {
+            bg: BRAND_PRIMARY,
+            color: "white",
+            _hover: { bg: BRAND_PRIMARY },
+          }
+    : {};
+
   return (
     <Button
+      {...brandedVariantProps}
       {...props}
+      variant={variant}
       disabled={disabled || props.isLoading}
       colorScheme={colorScheme}
       className={

@@ -81,7 +81,12 @@ function SchoolAdminUsers ({ filter }: Props) {
         </InputGroup>
           </HStack>
       </HStack>
-      <Box mb={1} height={"56px"} bgColor={"#DDECF7"} borderRadius={"8px"}>
+      <Box
+        mb={1}
+        height={"56px"}
+        bgColor={"var(--brand-secondary, #DDECF7)"}
+        borderRadius={"8px"}
+      >
         <HStack px={"20px"} py={"16px"}>
           <HStack
             w="full"

@@ -21,11 +21,11 @@ import SettingsIcon from "assets/imgs/user/heroicons-outline/settings.svg?react"
 import LogOutIcon from "assets/imgs/user/heroicons-outline/logout.svg?react";
 
 import SidebarIcon from "assets/imgs/user/sidebar.svg?react";
-import MenImage from "assets/imgs/men.png";
 import { authStore } from "stores/authStore";
 
 import { UserRoutes } from "constants/routes";
 import { useCurrentUserQuery } from "api/global/hooks";
+import { useUserAvatarSrc } from "hooks/useUserAvatarSrc";
 import { localStore } from "stores/localStore";
 import { useTitleByPathname } from "hooks/admin/useTitleByPathname";
 import { useTranslation } from "react-i18next";
@@ -78,6 +78,7 @@ export default function UserLayout({ children }: PropsWithChildren<Props>) {
   const { isOpen: isMenuOpen, onToggle, onClose } = useDisclosure();
   const [isOpen, setIsOpen] = useState<boolean>(true);
   const { data: User } = useCurrentUserQuery();
+  const { src: avatarSrc, key: avatarKey } = useUserAvatarSrc();
   const direction = localStore((store) => store.direction);
   const navigate = useNavigate();
   const { user } = authStore();
@@ -108,21 +109,21 @@ export default function UserLayout({ children }: PropsWithChildren<Props>) {
   };
 
   const activeButtonStyle = {
-    bg: "#DDECF7",
-    border: "1px solid #0070C1",
-    color: "#0070C1",
+    bg: "var(--brand-secondary, #DDECF7)",
+    border: "1px solid var(--brand-primary, #0070C1)",
+    color: "var(--brand-primary, #0070C1)",
     borderRadius: "10px",
-    _hover: { bgColor: "#DDECF7" },
+    _hover: { bgColor: "var(--brand-secondary, #DDECF7)" },
   };
 
   const activeIconSx = {
     svg: {
-      color: "#0070C1",
-      fill: "#0070C1 !important",
+      color: "var(--brand-primary, #0070C1)",
+      fill: "var(--brand-primary, #0070C1) !important",
     },
     "svg path": {
-      stroke: "#DDECF7 !important",
-      fill: "#0070C1 !important",
+      stroke: "var(--brand-secondary, #DDECF7) !important",
+      fill: "var(--brand-primary, #0070C1) !important",
     },
   };
 
@@ -200,7 +201,7 @@ export default function UserLayout({ children }: PropsWithChildren<Props>) {
           zIndex={20}
           sx={{
             svg: {
-              stroke: "#0070C1",
+              stroke: "var(--brand-primary, #0070C1)",
               fill: "none",
             },
           }}
@@ -240,12 +241,12 @@ export default function UserLayout({ children }: PropsWithChildren<Props>) {
               borderRadius="10px"
             >
               <Image
+                key={avatarKey}
                 width="32px"
                 height="32px"
                 bg="#E9ECEF"
                 borderRadius="5px"
-                src={User?.image ?? MenImage}
-                fallbackSrc={MenImage}
+                src={avatarSrc}
                 objectFit="cover"
                 alt="Profile"
               />

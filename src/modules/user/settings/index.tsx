@@ -302,7 +302,7 @@ function Settings() {
                             <Text
                               fontFamily="Lato"
                               fontSize="14px"
-                              color="#0070C1"
+                              color="var(--brand-primary, #0070C1)"
                               py="4px"
                             >
                               {t("user.settings.selectLanguage")}
@@ -442,7 +442,7 @@ function Settings() {
                             <Text
                               fontFamily="Lato"
                               fontSize="14px"
-                              color="#0070C1"
+                              color="var(--brand-primary, #0070C1)"
                               py="4px"
                             >
                               {t("user.settings.selectTimeZone")}
@@ -711,7 +711,7 @@ function Settings() {
                         <Text
                           fontFamily="Lato"
                           fontSize="14px"
-                          color="#0070C1"
+                          color="var(--brand-primary, #0070C1)"
                           py="4px"
                         >
                           {t("user.settings.selectMode")}

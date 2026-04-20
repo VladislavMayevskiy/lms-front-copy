@@ -2,9 +2,23 @@
 import LogoIcon from "assets/imgs/logo.png";
 import GazaLogo from "assets/imgs/gaza.jpeg";
 import { authStore } from "stores/authStore";
+import { useSchoolBranding } from "branding/useSchoolBranding";
 
 export default function Logo() {
   const user = authStore((store) => store.user);
+  const { branding } = useSchoolBranding();
+
+  if (branding.logoUrl) {
+    return (
+      <div className="max-w-[140px] md:max-w-60 overflow-hidden">
+        <img
+          src={branding.logoUrl}
+          alt="School logo"
+          className="w-full h-full object-contain"
+        />
+      </div>
+    );
+  }
 
   return user?.name.includes("Gaza") ? (
     <div className="max-w-[100px] md:max-w-60 overflow-hidden">

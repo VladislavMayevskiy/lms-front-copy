@@ -162,7 +162,12 @@ function UnitQuizStep({
         </Text>
 
         <HStack gap={3}>
-          <Button onClick={() => refetch()} bg="#0070C1" color="white">
+          <Button
+            onClick={() => refetch()}
+            bg="var(--brand-primary, #0070C1)"
+            _hover={{ bg: "var(--brand-primary, #0070C1)" }}
+            color="white"
+          >
             {t("general.retry")}
           </Button>
           <Button variant="outline" borderColor="#B4D6DF" onClick={onBack}>
@@ -250,12 +255,19 @@ function UnitQuizStep({
                       h="26px"
                       borderRadius="full"
                       border="2px solid"
-                      borderColor={isSelectedOpt ? "#0070C1" : "#C9E1EA"}
+                      borderColor={isSelectedOpt ? "var(--brand-primary, #0070C1)" : "#C9E1EA"}
                       display="flex"
                       alignItems="center"
                       justifyContent="center"
                     >
-                      {isSelectedOpt && <Box w="14px" h="14px" borderRadius="full" bg="#0070C1" />}
+                      {isSelectedOpt && (
+                        <Box
+                          w="14px"
+                          h="14px"
+                          borderRadius="full"
+                          bg="var(--brand-primary, #0070C1)"
+                        />
+                      )}
                     </Box>
 
                     <Text fontSize="18px" fontFamily="Lato" fontWeight="medium">
@@ -271,14 +283,14 @@ function UnitQuizStep({
 
       <HStack justify="flex-end" mt={10}>
         <Button
-          bg="#0070C1"
+          bg="var(--brand-primary, #0070C1)"
+          _hover={{ bgColor: "var(--brand-primary, #0070C1)" }}
           color="white"
           borderRadius="10px"
           fontWeight="bold"
           isDisabled={!canSubmit}
           isLoading={isPending}
           onClick={onSubmit}
-          _hover={{ bgColor: "#0070C1" }}
         >
           {t("user.courses.learn.sendAnswers")}
         </Button>
@@ -547,11 +559,11 @@ function LearnCourse() {
             <HStack gap={3} mb={4}>
               <Button
                 variant={step === "unit" ? "solid" : "outline"}
-                bg={step === "unit" ? "#0070C1" : "transparent"}
-                color={step === "unit" ? "white" : "#0070C1"}
+                bg={step === "unit" ? "var(--brand-primary, #0070C1)" : "transparent"}
+                color={step === "unit" ? "white" : "var(--brand-primary, #0070C1)"}
                 borderColor="#B4D6DF"
                 borderRadius="10px"
-                _hover={{ bg: step === "unit" ? "#0070C1" : "transparent" }}
+                _hover={{ bg: step === "unit" ? "var(--brand-primary, #0070C1)" : "transparent" }}
                 onClick={() => setStep("unit")}
               >
                 {t("user.courses.learn.content", "Content")}
@@ -559,11 +571,11 @@ function LearnCourse() {
 
               <Button
                 variant={step === "results" ? "solid" : "outline"}
-                bg={step === "results" ? "#0070C1" : "transparent"}
-                color={step === "results" ? "white" : "#0070C1"}
+                bg={step === "results" ? "var(--brand-primary, #0070C1)" : "transparent"}
+                color={step === "results" ? "white" : "var(--brand-primary, #0070C1)"}
                 borderColor="#B4D6DF"
                 borderRadius="10px"
-                _hover={{ bg: step === "results" ? "#0070C1" : "transparent" }}
+                _hover={{ bg: step === "results" ? "var(--brand-primary, #0070C1)" : "transparent" }}
                 onClick={() => setStep("results")}
               >
                 {t("user.courses.learn.unitQuizResults", "Quiz results")}
@@ -588,10 +600,10 @@ function LearnCourse() {
               <HStack justify="flex-end" mt={6} gap={3}>
                 {!isCourseCompleted && (
                   <Button
-                    bg="#0070C1"
+                    bg="var(--brand-primary, #0070C1)"
                     textColor="white"
                     borderRadius="10px"
-                    _hover={{ bg: "#005A9E" }}
+                    _hover={{ bg: "var(--brand-primary, #0070C1)" }}
                     onClick={goNext}
                   >
                     {actionLabel}
@@ -716,12 +728,12 @@ function LearnCourse() {
                               key={unit.id}
                               px={3}
                               py="13px"
-                              borderColor={isActive ? "#0070C1" : "#CAE0C3"}
+                              borderColor={isActive ? "var(--brand-primary, #0070C1)" : "#CAE0C3"}
                               borderWidth="1px"
                               h="45px"
                               borderRadius="8px"
                               className="lms-dark-badge w-full"
-                              bgColor={isActive ? "#DDECF7" : "white"}
+                              bgColor={isActive ? "var(--brand-secondary, #DDECF7)" : "white"}
                               display="flex"
                               alignItems="center"
                               justifyContent="space-between"

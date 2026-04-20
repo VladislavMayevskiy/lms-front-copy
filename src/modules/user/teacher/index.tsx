@@ -50,7 +50,7 @@ function Teacher() {
 
           <HStack spacing={3}>
             {(isCoursesLoading || isPending) && (
-              <ChakraSpinner size="sm" color="#0070C1" />
+              <ChakraSpinner size="sm" color="var(--brand-primary, #0070C1)" />
             )}
             <Select
               placeholder="Pick a course to analyse"

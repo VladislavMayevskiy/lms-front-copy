@@ -81,8 +81,8 @@ function StudentRow({
             size="sm"
             name={student.name}
             src={student.image ?? undefined}
-            bg="#DDECF7"
-            color="#0070C1"
+            bg="var(--brand-secondary, #DDECF7)"
+            color="var(--brand-primary, #0070C1)"
           />
           <VStack align="flex-start" spacing={0} minW={0}>
             <Text
@@ -143,12 +143,12 @@ function StudentRow({
           <Button
             size="sm"
             variant="outline"
-            borderColor="#0070C1"
-            color="#0070C1"
+            borderColor="var(--brand-primary, #0070C1)"
+            color="var(--brand-primary, #0070C1)"
             fontFamily="Lato"
             fontSize="13px"
             borderRadius="6px"
-            _hover={{ bg: "#DDECF7" }}
+            _hover={{ bg: "var(--brand-secondary, #DDECF7)" }}
             onClick={() => {
               const dest = courseId
                 ? UserRoutes.quiz

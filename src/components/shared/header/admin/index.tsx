@@ -10,8 +10,8 @@ const activeStyle = {
   textDecoration: "underline",
   textDecorationThickness: "1px",
   textUnderlineOffset: "6px",
-  textDecorationColor: "#0070C1",
-  color: "#0070C1",
+  textDecorationColor: "var(--brand-primary, #0070C1)",
+  color: "var(--brand-primary, #0070C1)",
 };
 
 export default function AdminHeader() {
@@ -23,6 +23,7 @@ export default function AdminHeader() {
       <HStack spacing="20px">
         <HStack spacing="10px">
           <Logo />
+
         </HStack>
         {tabs[role].map((tab) => (
           <NavLink

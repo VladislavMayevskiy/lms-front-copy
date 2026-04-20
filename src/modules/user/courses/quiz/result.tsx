@@ -79,12 +79,17 @@ export default function UnitQuizResultContent({
     <Box className="lms-box">
       <Box
         p={4}
-        bg="rgba(0, 112, 193, 0.07)"
+        bg="var(--brand-secondary, #DDECF7)"
         border="1px solid #B4D6DF"
         borderRadius="12px"
         mb={6}
       >
-        <Text fontFamily="Lato" fontWeight="bold" fontSize="20px" color="#0070C1">
+        <Text
+          fontFamily="Lato"
+          fontWeight="bold"
+          fontSize="20px"
+          color="var(--brand-primary, #0070C1)"
+        >
           {t("user.courses.learn.totalScore", "Total score")}: {resultData.score}/100
         </Text>
         <Text fontFamily="Lato" color="#434645" fontSize="14px" mt={1}>
@@ -216,11 +221,11 @@ export default function UnitQuizResultContent({
           )}
           {onContinue && (
             <Button
-              bg="#0070C1"
+              bg="var(--brand-primary, #0070C1)"
               color="white"
               borderRadius="10px"
               fontWeight="bold"
-              _hover={{ bg: "#005A9E" }}
+              _hover={{ bg: "var(--brand-primary, #0070C1)" }}
               onClick={onContinue}
             >
               {t("user.courses.learn.nextUnit", "Continue")}

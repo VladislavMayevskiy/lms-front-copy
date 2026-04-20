@@ -165,7 +165,6 @@ export default function AdminSettings() {
   return (
     <AdminSettingsLayout>
       <VStack spacing="40px" align="stretch" w="100%">
-        {/* 1. Admin personal data */}
         <Box as="form" onSubmit={onSubmitAdmin}>
           <VStack spacing="32px" align="stretch">
             <Text fontSize="24px" fontWeight="semibold">
@@ -281,12 +280,12 @@ export default function AdminSettings() {
             <Button
               type="submit"
               isLoading={isPending}
-              bg="#0070C1"
+              bg="var(--brand-primary, #0070C1)"
               textColor="white"
               width="150px"
               height="48px"
               borderRadius="10px"
-              _hover={{ bgColor: "#0070C1" }}
+              _hover={{ bgColor: "var(--brand-primary, #0070C1)" }}
             >
               Save changes
             </Button>

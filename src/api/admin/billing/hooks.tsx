@@ -13,6 +13,7 @@ export const useCreateSchoolSubscription = (schoolId: number) => {
       queryClient.invalidateQueries({ queryKey: ["school-billing", schoolId] });
       queryClient.invalidateQueries({ queryKey: ["school-invoice", schoolId] });
       queryClient.invalidateQueries({ queryKey: ["school", schoolId] });
+      queryClient.invalidateQueries({ queryKey: ["school-branding", schoolId] });
       queryClient.invalidateQueries({ queryKey: ["current-user"] });
     },
   });
@@ -28,6 +29,7 @@ export const useUpdateSchoolSubscription = (schoolId: number) => {
       queryClient.invalidateQueries({ queryKey: ["school-billing", schoolId] });
       queryClient.invalidateQueries({ queryKey: ["school-invoice", schoolId] });
       queryClient.invalidateQueries({ queryKey: ["school", schoolId] });
+      queryClient.invalidateQueries({ queryKey: ["school-branding", schoolId] });
       queryClient.invalidateQueries({ queryKey: ["current-user"] });
     },
   });
@@ -43,6 +45,7 @@ export const useDeleteSchoolSubscription = (schoolId: number) => {
       queryClient.invalidateQueries({ queryKey: ["school-billing", schoolId] });
       queryClient.invalidateQueries({ queryKey: ["school-invoice", schoolId] });
       queryClient.invalidateQueries({ queryKey: ["school", schoolId] });
+      queryClient.invalidateQueries({ queryKey: ["school-branding", schoolId] });
       queryClient.invalidateQueries({ queryKey: ["current-user"] });
     },
   });

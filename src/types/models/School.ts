@@ -7,6 +7,9 @@ export type SchoolType = {
   phone: string;
   email: string;
   logo: Nullable<string>;
+  logoUrl?: Nullable<string>;
+  primaryColor?: Nullable<string>;
+  secondaryColor?: Nullable<string>;
 };
 
 export type CourseSchoolType = {

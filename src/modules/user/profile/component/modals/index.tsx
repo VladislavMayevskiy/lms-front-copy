@@ -74,7 +74,7 @@ const onUpdate = handleSubmit(() => {
               onClick={() => fileInputRef.current?.click()}
             >
               <LoadImg />
-              <Text fontSize="14px" color="#0070C1">
+              <Text fontSize="14px" color="var(--brand-primary, #0070C1)">
                 {t("user.profile.chooseFileOrDragHere")}
               </Text>
 

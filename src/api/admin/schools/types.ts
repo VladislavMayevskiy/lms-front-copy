@@ -13,7 +13,6 @@ export type ApiSchoolType = {
   id: number;
   district_id: number;
   name: string;
-  /** Display title (if returned by API); optional for backward compatibility */
   title?: string | null;
   country_code: string;
   phone: string;

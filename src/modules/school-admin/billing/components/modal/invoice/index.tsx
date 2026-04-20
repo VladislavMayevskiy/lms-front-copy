@@ -185,7 +185,8 @@ const onSubmit = async (data: InvoiceForm) => {
               <Button
                 type="submit"
                 h="44px"
-                bg="#0070C1"
+                bg="var(--brand-primary, #0070C1)"
+                _hover={{ bg: "var(--brand-primary, #0070C1)" }}
                 color="white"
                 isLoading={isPending}
                 isDisabled={!isValid}

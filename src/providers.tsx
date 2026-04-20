@@ -9,6 +9,7 @@ import { ToastContainer } from "react-toastify";
 import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 import { authStore } from "stores/authStore";
 import { Loading } from "./components/shared/loading/Loading";
+import SchoolBrandingProvider from "branding/SchoolBrandingProvider";
 
 import {
   PointElement,
@@ -61,7 +62,7 @@ const Providers = ({ children }: Props) => {
     <QueryClientProvider client={queryClient}>
       <ReactQueryDevtools initialIsOpen={false} />
       <ChakraProvider theme={theme}>
-        {children}
+        <SchoolBrandingProvider>{children}</SchoolBrandingProvider>
       </ChakraProvider>
       <Loading />
       <ToastContainer />

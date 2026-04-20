@@ -51,7 +51,7 @@ const stripeElementOptions = {
       fontSize: "14px",
       fontFamily: "Lato, sans-serif",
       color: "#434645",
-      "::placeholder": { color: "#0070C1" },
+      "::placeholder": { color: "var(--brand-primary, #0070C1)" },
     },
   },
 };
@@ -103,7 +103,7 @@ function TextField({
             borderWidth="1px"
             bgColor="#F5F7F9"
             borderColor="#B4D6DF"
-            _placeholder={{ color: "#0070C1" }}
+            _placeholder={{ color: "var(--brand-primary, #0070C1)" }}
           />
         </VStack>
       )}
@@ -300,7 +300,7 @@ function StripeActivateContent({ schoolId }: { schoolId: number }) {
                   bgColor="#F5F7F9"
                   borderColor="#B4D6DF"
                   color="#434645"
-                  _placeholder={{ color: "#0070C1" }}
+                  _placeholder={{ color: "var(--brand-primary, #0070C1)" }}
                 >
                   {COUNTRIES.map((c) => (
                     <option key={c.code} value={c.code}>
@@ -372,7 +372,8 @@ function StripeActivateContent({ schoolId }: { schoolId: number }) {
             h="48px"
             borderRadius="10px"
             fontFamily="Lato"
-            bg="#0070C1"
+            bg="var(--brand-primary, #0070C1)"
+            _hover={{ bg: "var(--brand-primary, #0070C1)" }}
             color="white"
             isLoading={isPending}
             isDisabled={!isValid || isPending || !stripe || !elements}
