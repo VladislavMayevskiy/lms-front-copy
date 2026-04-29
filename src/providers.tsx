@@ -8,6 +8,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { ToastContainer } from "react-toastify";
 import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 import { authStore } from "stores/authStore";
+import { localStore } from "stores/localStore";
 import { Loading } from "./components/shared/loading/Loading";
 import SchoolBrandingProvider from "branding/SchoolBrandingProvider";
 
@@ -36,27 +37,26 @@ ChartJS.register(
 
 type Props = PropsWithChildren;
 
-const lightTheme = extendTheme({
-  config: { initialColorMode: "light", useSystemColorMode: false },
-  direction: "ltr",
-});
-
-const darkTheme = extendTheme({
-  config: { initialColorMode: "dark", useSystemColorMode: false },
-  direction: "ltr",
-});
-
 const Providers = ({ children }: Props) => {
   const themeMode = authStore((s) => s.theme);
   const hydrated = authStore((s) => s.hydrated);
+  const direction = localStore((s) => s.direction);
 
   if (!hydrated) return null;
 
-  const theme = themeMode === "dark" ? darkTheme : lightTheme;
+  const theme = extendTheme({
+    config: { initialColorMode: themeMode === "dark" ? "dark" : "light", useSystemColorMode: false },
+    direction,
+  });
 
   useEffect(() => {
     document.body.setAttribute("data-theme", themeMode);
   }, [themeMode]);
+
+  useEffect(() => {
+    document.documentElement.setAttribute("dir", direction);
+    document.body.setAttribute("dir", direction);
+  }, [direction]);
 
   return (
     <QueryClientProvider client={queryClient}>

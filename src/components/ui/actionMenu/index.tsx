@@ -7,6 +7,7 @@ import {
   HStack,
 } from "@chakra-ui/react";
 import ArrowDownIcon from "assets/imgs/ArrowDown.svg?react";
+import { localStore } from "stores/localStore";
 
 type MenuItemType = {
   label: string;
@@ -20,8 +21,13 @@ type Props = {
 };
 
 export const ActionMenu = ({ trigger, items, hideArrowIcon }: Props) => {
+  const direction = localStore((s) => s.direction);
+
   return (
-    <Menu>
+    <Menu
+      placement={direction === "rtl" ? "bottom-end" : "bottom-start"}
+      strategy="fixed"
+    >
       <MenuButton type="button">
         <HStack>
           {trigger}
@@ -30,7 +36,10 @@ export const ActionMenu = ({ trigger, items, hideArrowIcon }: Props) => {
           )}
         </HStack>
       </MenuButton>
-      <MenuList>
+      <MenuList
+        maxW="calc(100vw - 24px)"
+        overflowX="hidden"
+      >
         {items.map(({ label, onClick }) => (
           <MenuItem key={`action-menu-item-${label}`} onClick={onClick}>{label}</MenuItem>
         ))}

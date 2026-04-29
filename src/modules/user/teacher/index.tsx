@@ -8,6 +8,7 @@ import {
 } from "@chakra-ui/react";
 
 import UserLayout, { UserBox } from "components/ui/layouts/user";
+import { localStore } from "stores/localStore";
 
 import { useGetCourses } from "api/user/courses/hooks";
 
@@ -20,6 +21,7 @@ import UnitAnalyticsBlock from "./components/UnitAnalyticsBlock";
 function Teacher() {
   const [isPending, startTransition] = useTransition();
   const [selectedCourseId, setSelectedCourseId] = useState<number | null>(null);
+  const direction = localStore((s) => s.direction);
 
   const { data: courses, isLoading: isCoursesLoading } = useGetCourses();
 
@@ -54,11 +56,13 @@ function Teacher() {
             )}
             <Select
               placeholder="Pick a course to analyse"
-              width="340px"
+              width={{ base: "100%", sm: "340px" }}
+              maxW="100%"
               fontFamily="Lato"
               fontSize="14px"
               borderColor="#B4D6DF"
               borderRadius="8px"
+              textAlign={direction === "rtl" ? "right" : "left"}
               isDisabled={isCoursesLoading || isPending}
               value={selectedCourseId ?? ""}
               onChange={handleCourseChange}

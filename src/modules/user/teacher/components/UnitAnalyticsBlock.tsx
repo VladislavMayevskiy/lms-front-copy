@@ -11,6 +11,7 @@ import {
 } from "@chakra-ui/react";
 import { useGetQuizAnalyticsUnit, useTeacherStudents } from "api/user/hooks";
 import { useShowCourse } from "api/user/courses/hooks";
+import { localStore } from "stores/localStore";
 import {
   buildStudentRowsFromQuestions,
   getRiskLevel,
@@ -85,6 +86,7 @@ type Props = { courseId: number | null };
 
 export default function UnitAnalyticsBlock({ courseId }: Props) {
   const [selectedUnitId, setSelectedUnitId] = useState<number | null>(null);
+  const direction = localStore((s) => s.direction);
 
   useEffect(() => {
     setSelectedUnitId(null);
@@ -135,11 +137,13 @@ export default function UnitAnalyticsBlock({ courseId }: Props) {
               ? "No units with quizzes"
               : "Select a unit"
           }
-          width="300px"
+          width={{ base: "100%", sm: "300px" }}
+          maxW="100%"
           fontFamily="Lato"
           fontSize="14px"
           borderColor="#B4D6DF"
           borderRadius="8px"
+          textAlign={direction === "rtl" ? "right" : "left"}
           isDisabled={!courseId || isCourseLoading || units.length === 0}
           value={selectedUnitId ?? ""}
           onChange={(e) =>

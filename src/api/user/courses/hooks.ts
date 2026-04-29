@@ -3,11 +3,18 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import type { ApiCourseType, UseGetCoursesParams, FinalQuizSubmitPayload, PurchaseCourseType, UserCourseType } from "./types";
 import { queryClient } from "api";
 
+const COURSE_QUERY_STALE_TIME = 10 * 60 * 1000;
+
 
 export const useGetCourses = (params?: UseGetCoursesParams) => {
   return useQuery<ApiCourseType[]>({
     queryKey: ["courses", params],
     queryFn: () => GetCourses({ page: 1, size: 9, ...params }),
+    staleTime: COURSE_QUERY_STALE_TIME,
+    gcTime: 30 * 60 * 1000,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    placeholderData: (previousData) => previousData,
   });
 };
 
@@ -15,6 +22,11 @@ export const useGetUserCourses = (params?: { progress_status?: number }) => {
   return useQuery<UserCourseType[]>({
     queryKey: ["user-courses", params],
     queryFn: () => GetUserCourses(params),
+    staleTime: COURSE_QUERY_STALE_TIME,
+    gcTime: 30 * 60 * 1000,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    placeholderData: (previousData) => previousData,
   });
 };
 
@@ -24,7 +36,11 @@ export const useShowCourse = (courseId: number) => {
     queryKey: ["course", courseId],
     queryFn: () => ShowCourse(courseId),
     enabled: !!courseId,
-
+    staleTime: COURSE_QUERY_STALE_TIME,
+    gcTime: 30 * 60 * 1000,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    placeholderData: (previousData) => previousData,
   })
 }
 export const useStartCourse = () => {

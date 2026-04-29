@@ -9,6 +9,7 @@ import {
 import X from "assets/imgs/admin/modal/Close.svg?react";
 import Chevron from "assets/imgs/admin/modal/chevron.svg?react";
 import Check from "assets/imgs/admin/modal/check.svg?react";
+import { localStore } from "stores/localStore";
 
 // Chakra's Checkbox clones the icon element and injects `isChecked` / `isIndeterminate`
 // as React props. SVG components from Vite's SVGR spread all props onto the <svg> DOM
@@ -44,6 +45,7 @@ export const SelectMultipleField = <T extends { id: number | string; name: strin
 }: Props<T>) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const selected = (value ?? []) as Array<T['id']>;
+  const direction = localStore((s) => s.direction);
 
   const toggleItem = (id: T['id']) => {
     if (selected.includes(id)) {
@@ -135,7 +137,8 @@ export const SelectMultipleField = <T extends { id: number | string; name: strin
 
         <Box
           position="absolute"
-          right="12px"
+          right={direction === "rtl" ? undefined : "12px"}
+          left={direction === "rtl" ? "12px" : undefined}
           top="50%"
           transform={
             isOpen
@@ -169,6 +172,8 @@ export const SelectMultipleField = <T extends { id: number | string; name: strin
           py="10px"
           px="22px"
           minH="150px"
+          maxW="calc(100vw - 32px)"
+          overflowX="hidden"
         >
           <VStack align="stretch" spacing="4px">
             {data.map(item => (
