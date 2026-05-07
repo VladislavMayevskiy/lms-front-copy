@@ -1,5 +1,6 @@
 import type { ApiSchoolType } from "api/user/school/types";
 import { env } from "constants/env";
+import LegacyDefaultLogo from "assets/imgs/default-logo.png";
 
 export type SchoolBranding = {
   logoUrl: string | null;
@@ -34,6 +35,18 @@ export function mapApiSchoolToBranding(
 
 export const defaultSchoolBranding: SchoolBranding = {
   logoUrl: null,
+  primaryColor: DEFAULT_PRIMARY,
+  secondaryColor: DEFAULT_SECONDARY,
+};
+
+/**
+ * TEMPORARY PRODUCTION OVERRIDE:
+ * When `VITE_FORCE_DEFAULT_BRANDING=true`, we force this legacy/default branding for all schools.
+ *
+ * Keep this centralized so restoring per-school branding is a single-flag change.
+ */
+export const forcedDefaultSchoolBranding: SchoolBranding = {
+  logoUrl: LegacyDefaultLogo,
   primaryColor: DEFAULT_PRIMARY,
   secondaryColor: DEFAULT_SECONDARY,
 };

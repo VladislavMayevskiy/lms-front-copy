@@ -25,6 +25,10 @@ import {
 
 import "react-toastify/dist/ReactToastify.css";
 
+// TEMP DEBUG (remove after diagnosing slow loads)
+console.time("boot:providers");
+console.timeLog("boot:providers", "providers.tsx module loaded (before ChartJS.register)");
+
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -42,7 +46,11 @@ const Providers = ({ children }: Props) => {
   const hydrated = authStore((s) => s.hydrated);
   const direction = localStore((s) => s.direction);
 
-  if (!hydrated) return null;
+  if (!hydrated) {
+    console.timeLog("boot:providers", "blocked: authStore not hydrated yet");
+    return null;
+  }
+  console.timeLog("boot:providers", "authStore hydrated, rendering providers");
 
   const theme = extendTheme({
     config: { initialColorMode: themeMode === "dark" ? "dark" : "light", useSystemColorMode: false },

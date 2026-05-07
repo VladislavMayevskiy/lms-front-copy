@@ -2,12 +2,12 @@ import type { PropsWithChildren } from "react";
 import { useEffect, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { authStore } from "stores/authStore";
-import { localStore } from "stores/localStore";
-import { useCurrentUserQuery } from "api/global/hooks";
 import { getSchool } from "api/user/school";
 import type { ApiSchoolType } from "api/user/school/types";
+import { isForceDefaultBrandingEnabled } from "constants/env";
 import {
   defaultSchoolBranding,
+  forcedDefaultSchoolBranding,
   mapApiSchoolToBranding,
   schoolBrandingQueryKey,
   type SchoolBranding,
@@ -29,30 +29,19 @@ function applyBrandingCssVars(branding: SchoolBranding) {
   root.style.setProperty("--color-primary", branding.primaryColor);
 }
 
-/**
- * Resolve school_id and role from React Query first, then auth store.
- * Fixes bootstrap race: current-user query often resolves before useLoadCurrentUser's setUser runs,
- * so store-only gating delayed branding for School Admin and School Course Provider.
- */
 function useSchoolBrandingIdentity() {
-  const token = localStore((s) => s.token);
-  const { data: queryUser } = useCurrentUserQuery(Boolean(token));
-  const sSid = authStore((s) => s.user?.school_id);
-  const sRole = authStore((s) => s.user?.role);
-
-  const qSid = queryUser?.school_id;
-  const qRole = queryUser?.role;
+  const schoolIdRaw = authStore((s) => s.user?.school_id);
+  const role = authStore((s) => s.user?.role) ?? null;
 
   return useMemo(() => {
-    const rawId = qSid ?? sSid;
     const schoolId =
-      typeof rawId === "number" && rawId > 0 ? rawId : null;
-    const role = qRole ?? sRole ?? null;
+      typeof schoolIdRaw === "number" && schoolIdRaw > 0 ? schoolIdRaw : null;
     return { schoolId, role };
-  }, [qSid, sSid, qRole, sRole]);
+  }, [schoolIdRaw, role]);
 }
 
 export default function SchoolBrandingProvider({ children }: PropsWithChildren) {
+  const forceDefaultBranding = isForceDefaultBrandingEnabled();
   const { schoolId, role } = useSchoolBrandingIdentity();
 
   const isSchoolScopedRole =
@@ -65,7 +54,7 @@ export default function SchoolBrandingProvider({ children }: PropsWithChildren) 
 
   const query = useQuery<ApiSchoolType | null>({
     queryKey: schoolId != null ? schoolBrandingQueryKey(schoolId) : ["school-branding", "none"],
-    enabled: shouldApplySchoolBranding && schoolId != null,
+    enabled: !forceDefaultBranding && shouldApplySchoolBranding && schoolId != null,
     queryFn: async () => {
       if (schoolId == null || !shouldApplySchoolBranding) return null;
       return await getSchool(schoolId);
@@ -75,18 +64,22 @@ export default function SchoolBrandingProvider({ children }: PropsWithChildren) 
   });
 
   const branding = useMemo(() => {
+    // TEMPORARY PRODUCTION OVERRIDE:
+    // When enabled, force legacy/default branding (logo + colors) globally and skip per-school queries.
+    if (forceDefaultBranding) return forcedDefaultSchoolBranding;
     if (!shouldApplySchoolBranding) return defaultSchoolBranding;
     return mapApiSchoolToBranding(query.data);
-  }, [query.data, shouldApplySchoolBranding]);
+  }, [forceDefaultBranding, query.data, shouldApplySchoolBranding]);
 
   useEffect(() => {
     applyBrandingCssVars(branding);
   }, [branding]);
 
   const value: SchoolBrandingContextValue = useMemo(() => {
-    const isLoading = shouldApplySchoolBranding ? query.isLoading : false;
+    const isLoading =
+      forceDefaultBranding ? false : shouldApplySchoolBranding ? query.isLoading : false;
     return { branding, isLoading };
-  }, [branding, query.isLoading, shouldApplySchoolBranding]);
+  }, [branding, forceDefaultBranding, query.isLoading, shouldApplySchoolBranding]);
 
   return (
     <SchoolBrandingContext.Provider value={value}>

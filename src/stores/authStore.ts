@@ -42,6 +42,9 @@ export const authStore = create<AuthStore>()(
       name: "lms-auth-store",
       storage: createJSONStorage(() => localStorage),
       onRehydrateStorage: () => (state) => {
+        // TEMP DEBUG (remove after diagnosing slow loads)
+        // If this never runs, `Providers` will return null forever.
+        console.timeLog?.("boot:providers", "authStore rehydrated");
         state?.setHydrated();
       },
     }

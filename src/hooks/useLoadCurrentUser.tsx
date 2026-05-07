@@ -33,6 +33,15 @@ export const useLoadCurrentUser = () => {
   const { data, isLoading } = useCurrentUserQuery(Boolean(token));
   const { i18n } = useTranslation();
 
+  // TEMP DEBUG (remove after diagnosing slow loads)
+  useEffect(() => {
+    console.timeLog?.(
+      "boot:providers",
+      "useLoadCurrentUser",
+      { hasToken: Boolean(token), isLoading, hasUser: Boolean(data) }
+    );
+  }, [token, isLoading, data]);
+
   useEffect(() => {
     if (data) {
       setUser(data);

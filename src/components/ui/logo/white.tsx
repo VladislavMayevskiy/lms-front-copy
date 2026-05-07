@@ -16,8 +16,8 @@ export default function LogoWhite() {
       src={LogoIcon}
       alt="Gaza Logo"
       className="
-        w-[150px] h-[150px]
-        md:w-[220px] md:h-[220px]
+        w-[110px] h-[44px]
+        md:w-[140px] md:h-[56px]
         object-contain
       "
     />
