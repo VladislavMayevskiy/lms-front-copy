@@ -24,7 +24,6 @@ function applyBrandingCssVars(branding: SchoolBranding) {
   root.style.setProperty("--brand-primary", branding.primaryColor);
   root.style.setProperty("--brand-secondary", branding.secondaryColor);
 
-  // Bridge to existing CSS tokens used across the app.
   root.style.setProperty("--accent-main", branding.primaryColor);
   root.style.setProperty("--color-primary", branding.primaryColor);
 }
